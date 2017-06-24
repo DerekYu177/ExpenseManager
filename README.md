@@ -2,7 +2,7 @@ This is be roughly split into three parts: Input, Process, Output
 
 ##### Input
 
-Getting the photo. This can take several different forms depending on what the format is. The easiest is to wait until all the photos have been taken (one photo per receipt). 
+Getting the photo. This can take several different forms depending on what the format is. The easiest is to wait until all the photos have been taken (one photo per receipt).
   1. These photos can be grabbed directly from where they are stored.
   2. This does mean that when they are imported into the Apple Photos app, they need to be exported. Each export group can be automatically tagged with the date, making each export easier
 
@@ -20,3 +20,11 @@ We apply CV onto each photo to extract relevant tags and attributes.
 ##### Output
 
 Photos which are receipts are indexed and the data should be added to a CSV file. Technically any format is okay as long as the data exists.
+
+## Installation Process
+
+> brew install tesseract
+
+> pip install Pillow
+
+> pip install pytesseract
