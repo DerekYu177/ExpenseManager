@@ -1,22 +1,13 @@
 #!/usr/bin/python2.7
-import constants
 
-# required for image processing
-from PIL import Image
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = constants.PYTESSERACT_LOCATION
+# build in classes
+import shared
+import file_accessor
+import persistor
+import image_processor
+import debug
 
 def main():
-    print text_from_image("text_advanced.gif")
-
-def text_from_image(image_name):
-    return pytesseract.image_to_string(
-        Image.open(constants.IMAGE_LOCATION + image_name)
-    )
-
-def debug():
-    import sys
-    for path in sys.path:
-        print path
+    # print text_from_image("high_def_receipt.jpg")
 
 main()
