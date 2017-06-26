@@ -1,14 +1,14 @@
 # Grabbing current directory
 import os
 
-class global_variables
+class global_variables:
     CURRENT_DIRECTORY = os.getcwd()
 
-    IMAGE_LOCATION = '%s/../test/Images' % (CURRENT_DIRECTORY)
+    IMAGE_LOCATION = '%s/../Test/Images' % (CURRENT_DIRECTORY)
 
-    RECEIPT_LOCATION
+    RECEIPT_LOCATION = ""
 
     DEBUG = False
 
-class global_constants
+class global_constants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'

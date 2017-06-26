@@ -3,3 +3,6 @@
 
 # Default Files
 .DS_Store
+
+# pytest / unittest automatically generated files
+.cache
