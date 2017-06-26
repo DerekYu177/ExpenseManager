@@ -9,3 +9,4 @@ def persist(key, value):
 
 def find_value(key):
     # TODO: this
+    raise NotImplementedError
