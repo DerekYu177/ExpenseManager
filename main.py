@@ -9,8 +9,6 @@ import Modules.debug as debug
 
 def main():
     # print text_from_image("high_def_receipt.jpg")
-
-
-    debug.show_sys_path()
+    # debug.show_sys_path()
 
 main()

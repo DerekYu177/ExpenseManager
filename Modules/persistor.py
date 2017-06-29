@@ -16,29 +16,30 @@ class Persistor:
 
         if global_variables.DEBUG:
             print "file path: %s" % (self.file_path)
+            print "does directory exist: %s" % (directory_exists)
+            print "does file exist: %s" % (file_exists)
 
         if not directory_exists:
             os.makedirs(directory)
-        elif not file_exists:
-            open(global_constants.PERSISTED_DATA, "w+").close()
-        else: # both the directory and the file exists
-            return
+
+        if not file_exists:
+            open(global_constants.PERSISTED_DATA_PATH, "w+").close()
 
         return
 
     def persist(self, data):
-        data_file = open(global_constants.PERSISTED_DATA, "a") #append
+        data_file = open(global_constants.PERSISTED_DATA_PATH, "a") #append
         write_data = self.array_to_string(data)
 
         if global_variables.DEBUG:
             print write_data
 
-        # write_data_with_newline = write_data + "\n"
-        data_file.write(write_data)
+        write_data_with_newline = write_data + "\n"
+        data_file.write(write_data_with_newline)
         data_file.close()
 
     def find_data(self, data):
-        with open(global_constants.PERSISTED_DATA, "r") as f:
+        with open(global_constants.PERSISTED_DATA_PATH, "r") as f:
             reader = csv.reader(f, delimiter=",")
             for row in reader:
                 if data[1] == row[1]: # sort by time
@@ -49,10 +50,7 @@ class Persistor:
             return False
 
     def clear_file(self):
-        open(global_constants.PERSISTED_DATA, 'w').close()
-
-    def kill(self):
-        del self
+        open(global_constants.PERSISTED_DATA_PATH, 'w').close()
 
     def array_to_string(self, arr):
         try:
@@ -60,6 +58,5 @@ class Persistor:
         except TypeError:
             print "Data format should be in a list"
 
-    def find_value(key):
-        # TODO: this
-        raise NotImplementedError
+    def is_file_empty():
+        return os.stat(global_constants.PERSISTED_DATA_PATH).st_size == 0
