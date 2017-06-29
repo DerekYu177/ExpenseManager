@@ -23,3 +23,5 @@ def enhance(image, enhance_factor, contrast_factor, sharpen_factor):
     sharpened_image.enhance(sharpen_factor)
 
     return sharpened_image
+
+#[Time, Location, Cost, Description]

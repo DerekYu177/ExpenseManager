@@ -11,13 +11,13 @@ def all_images_in_location():
 
     if global_variables.DEBUG:
         print "All the files located in the receipt location %s are %s" % (
-         global_variables.RECEIPT_LOCATION, list_to_string(file_names)
+         global_variables.RECEIPT_LOCATION, print_list_to_string(file_names)
         )
 
     return file_names
 
 
-def list_to_string(item_list):
+def print_list_to_string(item_list):
     # TODO: is this correct?
 
     string = ""
