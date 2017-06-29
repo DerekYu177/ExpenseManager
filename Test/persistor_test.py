@@ -1,22 +1,20 @@
-import unittest
-import pytest
+import unittest, pytest, os
 from ..Modules import persistor
+from ..Modules.shared import global_constants as global_constants
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
         global p
         p = persistor.Persistor()
 
-    def teardown_method(self, method):
-        p.clear_file()
+    # def teardown_method(self, method):
+        # p.clear_file()
         # persistor.kill()
 
     def test_initializa_data_file(self):
         p.initialize_data_file()
 
-        assert(
-            os.path.exists(global_constants.PERSISTED_DATA_PATH)
-        )
+        assert os.path.isfile(global_constants.PERSISTED_DATA_PATH)
 
     def test_persist(self):
 
@@ -29,8 +27,8 @@ class TestMethods(unittest.TestCase):
         f = open(global_constants.PERSISTED_DATA, "r")
         contents = f.read()
 
-        expected = "06/28/17-19:18:42, Milton B 3498 Ave du parc, 4.40, test data" \
-                "06/28/17-19:18:43, Milton B 3498 Ave du parc, 4.40, test data"
+        expected = "06/28/17-19:18:42,Milton B 3498 Ave du parc,4.40,test data" \
+                "06/28/17-19:18:43,Milton B 3498 Ave du parc,4.40,test data"
 
         assert contents == expected
 

@@ -5,9 +5,9 @@ import csv, os
 class Persistor:
 
     def __init__(self):
-        initialize_data_file()
+        self.initialize_data_file()
 
-    def initialize_data_file():
+    def initialize_data_file(self):
         self.file_path = global_constants.PERSISTED_DATA_PATH
         directory = os.path.dirname(self.file_path)
 
@@ -26,18 +26,18 @@ class Persistor:
 
         return
 
-    def persist(data):
+    def persist(self, data):
         data_file = open(global_constants.PERSISTED_DATA, "a") #append
-        write_data = array_to_string(data)
+        write_data = self.array_to_string(data)
 
         if global_variables.DEBUG:
             print write_data
 
-        write_data_with_newline = write_data + "\n"
-        data_file.write(write_data_with_newline)
+        # write_data_with_newline = write_data + "\n"
+        data_file.write(write_data)
         data_file.close()
 
-    def find_data(data):
+    def find_data(self, data):
         with open(global_constants.PERSISTED_DATA, "r") as f:
             reader = csv.reader(f, delimiter=",")
             for row in reader:
@@ -48,13 +48,13 @@ class Persistor:
             f.close()
             return False
 
-    def clear_file():
+    def clear_file(self):
         open(global_constants.PERSISTED_DATA, 'w').close()
 
-    def kill():
+    def kill(self):
         del self
 
-    def array_to_string(arr):
+    def array_to_string(self, arr):
         try:
             return ",".join(arr)
         except TypeError:
