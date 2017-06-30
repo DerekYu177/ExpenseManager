@@ -58,5 +58,5 @@ class Persistor:
         except TypeError:
             print "Data format should be in a list"
 
-    def is_file_empty():
+    def is_file_empty(self):
         return os.stat(global_constants.PERSISTED_DATA_PATH).st_size == 0
