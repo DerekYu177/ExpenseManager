@@ -6,7 +6,7 @@ directory = os.getcwd()
 class global_variables:
     RECEIPT_LOCATION = ""
 
-    IMAGE_LOCATION = '%s/../Test/Images' % (directory)
+    IMAGE_LOCATION = '%s/Test/Images' % (directory)
 
     DEBUG = False
 
