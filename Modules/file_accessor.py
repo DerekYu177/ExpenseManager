@@ -5,7 +5,7 @@ from Tkinter import Tk
 from tkFileDialog import askdirectory
 
 # for retrieving all files in directory
-from os import listdr
+from os import listdir
 from os.path import isfile
 
 def all_images_in_location():
@@ -36,7 +36,7 @@ def find_photos():
 def print_list_to_string(item_list):
     string = ""
 
-    if not type(item_list) is list:
+    if type(item_list) is list:
         for item in item_list:
             string = string + item + "\n"
     else:
