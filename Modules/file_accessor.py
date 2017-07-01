@@ -1,32 +1,51 @@
 from shared import global_variables
 
+# for file prompt
+from Tkinter import Tk
+from tkFileDialog import askdirectory
+
+# for retrieving all files in directory
+from os import listdr
+from os.path import isfile
+
 def all_images_in_location():
     # Returns a list of all the names of the photos in the RECEIPT_LOCATION
 
     global_variables.RECEIPT_LOCATION = prompt_user_for_location()
 
-    file_names = []
-    for photos in global_variables.RECEIPT_LOCATION:
-        file_names.append(photos)
+    photos = find_photos()
 
     if global_variables.DEBUG:
         print "All the files located in the receipt location %s are %s" % (
-         global_variables.RECEIPT_LOCATION, print_list_to_string(file_names)
+         global_variables.RECEIPT_LOCATION, print_list_to_string(photos)
         )
 
-    return file_names
+    return photos
 
+def find_photos():
+    if not global_variables.RECEIPT_LOCATION:
+        raise NoReceiptLocationInstantiatedError
+
+    photos = []
+    for photo in listdir(global_variables.RECEIPT_LOCATION):
+        if isfile(photo):
+            photos.append(photo)
+
+    return photos
 
 def print_list_to_string(item_list):
-    # TODO: is this correct?
-
     string = ""
-    for item in item_list:
-        string = string + item + "\n"
+
+    if not type(item_list) is list:
+        for item in item_list:
+            string = string + item + "\n"
+    else:
+        string = item_list
+
     return string
 
 def prompt_user_for_location():
-    # TODO: Maybe a popup to ask user to find the location of the photos.
+    tk = Tk()
+    tk.withdraw()
 
-    persist('receipt_location', receipt_location)
-    return receipt_location
+    return askdirectory()

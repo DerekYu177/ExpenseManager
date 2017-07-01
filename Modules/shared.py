@@ -4,7 +4,7 @@ import os
 directory = os.getcwd()
 
 class global_variables:
-    RECEIPT_LOCATION = "%s/../Receipts" % (directory)
+    RECEIPT_LOCATION = ""
 
     IMAGE_LOCATION = '%s/../Test/Images' % (directory)
 
