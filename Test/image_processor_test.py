@@ -28,6 +28,10 @@ class TestMethods(unittest.TestCase):
             $1293.17
             $4.04
             $192.19362
+
+            amount: $ 2017.21
+
+            $  3000.1
             """
 
         s = image_processor.SearchableText(text)
@@ -43,7 +47,16 @@ class TestMethods(unittest.TestCase):
 
     def test_find_total_amount(self):
         expected = {
-            "total_amount": "$1293.17"
+            "total_amount": "$2017.21"
         }
 
         assert expected == s.find_total_amount()
+
+    def test_relevant_text(self):
+        expected = {
+            "date": "07/01/17",
+            "time": "20:48:14",
+            "total_amount": "$2017.21"
+        }
+
+        assert expected == s.relevant_text()

@@ -16,10 +16,9 @@ def text_from_image(image):
 
     s = SearchableText(text)
 
-    datetime = s.find_datetime()
-    total_amount = s.find_total_amount()
+    relevant_text = s.relevant_text()
 
-    return text, datetime
+    return text, relevant_text
 
 
 def enhance(image, enhance_factor, contrast_factor, sharpen_factor):
@@ -42,20 +41,25 @@ class SearchableText:
     def __init__(self, text):
         self.text = text
 
-    # public facing methods
+    def relevant_text(self):
+        relevant_text = {}
+        relevant_text.update(self.find_datetime())
+        relevant_text.update(self.find_total_amount())
+
+        return relevant_text
 
     def find_address(self):
         raise NotImplementedError
 
     def find_total_amount(self):
-        money_regex = r'[$]\d+(?:\.\d{2})?'
+        money_regex = r'[$]\s*\d+\.\d{2}'
 
         amounts = re.findall(money_regex, self.text)
 
-        amount = self.max_amounts(amounts)
+        amount = self.__max_amounts(amounts)
 
         total_amount = {
-            "total_amount": self.add_dollar_sign(amount),
+            "total_amount": self.__add_dollar_sign(amount),
         }
 
         if shared.global_variables.DEBUG:
@@ -67,8 +71,8 @@ class SearchableText:
         date_regex = r'(\d+/\d+/\d+)'
         time_regex = r'(\d+:\d+:\d+)'
 
-        date = self.search_singular_with_regex(date_regex)
-        time = self.search_singular_with_regex(time_regex)
+        date = self.__search_singular_with_regex(date_regex)
+        time = self.__search_singular_with_regex(time_regex)
 
         date_time = {
             "date": date,
@@ -80,28 +84,26 @@ class SearchableText:
 
         return date_time
 
-    # private facing methods
-
-    def max_amounts(self, money_list):
+    def __max_amounts(self, money_list):
         max_amount = 0
 
         for money in money_list:
 
-            m = self.strip_dollar_sign(money)
+            m = self.__strip_dollar_sign(money)
 
             if m > max_amount:
                 max_amount = m
 
         return max_amount
 
-    def strip_dollar_sign(self, money):
+    def __strip_dollar_sign(self, money):
         if money[0] == "$":
             return float(money[1:])
 
-    def add_dollar_sign(self, number):
+    def __add_dollar_sign(self, number):
         return "$%s" % (number)
 
-    def search_singular_with_regex(self, regex):
+    def __search_singular_with_regex(self, regex):
         match = re.search(regex, self.text)
 
         if match is None:

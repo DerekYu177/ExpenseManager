@@ -24,7 +24,7 @@ class TestMethods(unittest.TestCase):
     def test_find_photos(self):
         shared.global_variables.RECEIPT_LOCATION = shared.global_variables.IMAGE_LOCATION
 
-        assert len(file_accessor.find_photos()) == 6
+        assert len(file_accessor.find_photos()) == 5
 
     def test_is_photo(self):
         test_list_of_photos = {

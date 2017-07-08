@@ -8,7 +8,15 @@ import Modules.image_processor as image_processor
 import Modules.debug as debug
 
 def main():
-    # print text_from_image("high_def_receipt.jpg")
+
+    # access list of all photo files
+    # list_of_photos_files = file_accessor.all_photos_in_location()
+    #
+    # for photo_file in list_of_photos_files:
+    #     image_processor.text_from_image(photo_file)
+
+
+    print image_processor.text_from_image("medium_def_receipt.jpg")
     # debug.show_sys_path()
 
 main()
