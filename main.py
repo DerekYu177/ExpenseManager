@@ -9,12 +9,12 @@ import Modules.debug                as debug
 import Modules.user_interface       as user_interface
 
 def main():
-    # print image_processor.text_from_image("medium_def_receipt.jpg")
+    print image_processor.text_from_image("medium_def_receipt.jpg")
 
-    path = "%s/medium_def_receipt.jpg" % (shared.global_variables.IMAGE_LOCATION)
-
-    ui = user_interface.UserInterface(path)
-    ui.display_image()
+    # path = "%s/medium_def_receipt.jpg" % (shared.global_variables.IMAGE_LOCATION)
+    #
+    # ui = user_interface.UserInterface(path)
+    # ui.display_image()
 
 
 main()

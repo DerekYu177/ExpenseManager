@@ -32,6 +32,8 @@ class TestMethods(unittest.TestCase):
             amount: $ 2017.21
 
             $  3000.1
+
+            $ 291.20
             """
 
         s = image_processor.ImageText(text)

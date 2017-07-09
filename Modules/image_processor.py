@@ -59,7 +59,7 @@ class ImageText:
         amount = self.__max_amounts(amounts)
 
         total_amount = {
-            "total_amount": self.__add_dollar_sign(amount),
+            "total_amount": amount,
         }
 
         if shared.global_variables.DEBUG:
@@ -88,20 +88,33 @@ class ImageText:
         max_amount = 0
 
         for money in money_list:
-
             m = self.__strip_dollar_sign(money)
 
             if m > max_amount:
                 max_amount = m
 
-        return max_amount
+        return self.__add_dollar_sign(max_amount)
 
     def __strip_dollar_sign(self, money):
         if money[0] == "$":
             return float(money[1:])
 
     def __add_dollar_sign(self, number):
-        return "$%s" % (number)
+        number = str(number)
+
+        number = self.__add_lost_zero(number)
+
+        return "$" + number
+
+    def __add_lost_zero(self, number):
+        dollar, cents = number.split('.')
+
+        if len(cents) == 0:
+            return number + "00"
+        elif len(cents) == 1:
+            return number + "0"
+        else:
+            return number
 
     def __search_singular_with_regex(self, regex):
         match = re.search(regex, self.text)

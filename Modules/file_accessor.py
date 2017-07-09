@@ -1,5 +1,5 @@
 from shared import global_variables
-from Modules import user_interface
+import user_interface
 
 # for retrieving all files in directory
 from os import listdir
