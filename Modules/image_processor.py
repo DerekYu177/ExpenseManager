@@ -14,7 +14,7 @@ def text_from_image(image):
         img.open(shared.global_variables.IMAGE_LOCATION + "/" + image)
     )
 
-    s = SearchableText(text)
+    s = ImageText(text)
 
     relevant_text = s.relevant_text()
 
@@ -36,7 +36,7 @@ def enhance(image, enhance_factor, contrast_factor, sharpen_factor):
 
 #[Time, Location, Cost, Description]
 
-class SearchableText:
+class ImageText:
 
     def __init__(self, text):
         self.text = text

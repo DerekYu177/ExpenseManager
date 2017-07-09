@@ -34,7 +34,7 @@ class TestMethods(unittest.TestCase):
             $  3000.1
             """
 
-        s = image_processor.SearchableText(text)
+        s = image_processor.ImageText(text)
 
 
     def test_find_datetime(self):

@@ -1,8 +1,5 @@
 from shared import global_variables
-
-# for file prompt
-from Tkinter import Tk
-from tkFileDialog import askdirectory
+from Modules import user_interface
 
 # for retrieving all files in directory
 from os import listdir
@@ -12,7 +9,7 @@ from os.path import isfile
 import re
 
 def all_photos_in_location():
-    global_variables.RECEIPT_LOCATION = prompt_user_for_location()
+    global_variables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
 
     photos = find_photos()
 
@@ -60,9 +57,3 @@ def print_list_to_string(item_list):
         string = item_list
 
     return string
-
-def prompt_user_for_location():
-    tk = Tk()
-    tk.withdraw()
-
-    return askdirectory()
