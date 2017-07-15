@@ -18,7 +18,10 @@ def text_from_image(image):
 
     relevant_text = s.relevant_text()
 
-    return text, relevant_text
+    if shared.global_variables.DEBUG:
+        return text, relevant_text
+    else:
+        return relevant_text
 
 
 def enhance(image, enhance_factor, contrast_factor, sharpen_factor):
@@ -55,15 +58,11 @@ class ImageText:
         money_regex = r'[$]\s*\d+\.\d{2}'
 
         amounts = re.findall(money_regex, self.text)
-
         amount = self.__max_amounts(amounts)
 
         total_amount = {
             "total_amount": amount,
         }
-
-        if shared.global_variables.DEBUG:
-            print total_amount
 
         return total_amount
 
@@ -78,10 +77,7 @@ class ImageText:
             "date": date,
             "time": time
         }
-
-        if shared.global_variables.DEBUG:
-            print date_time
-
+        
         return date_time
 
     def __max_amounts(self, money_list):

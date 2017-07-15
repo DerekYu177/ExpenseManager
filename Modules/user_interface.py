@@ -16,8 +16,7 @@ def prompt_user_for_location():
 
 class UserInterface:
 
-    def __init__(self, image_path):
-        self.image_path = image_path
+    def __init__(self):
 
         # single declaration
         root = tk.Tk()
@@ -29,14 +28,12 @@ class UserInterface:
 
         self.root = root
 
-    def display_image(self):
+    def display_image(self, image_path):
         window = self.root
         window.title("Title")
         window.configure(background="grey")
 
-        path = self.image_path
-
-        image = Image.open(path)
+        image = Image.open(image_path)
         tk_image = ImageTk.PhotoImage(self.__resize(image))
 
         panel = tk.Label(window, image = tk_image)

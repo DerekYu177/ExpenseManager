@@ -24,7 +24,18 @@ Photos which are receipts are indexed and the data should be added to a CSV file
 ## Installation Process
 
 > brew install tesseract
+pip install Pillow
+pip install pytesseract
 
-> pip install Pillow
+## To get homebrew w/ python2.7 and PyQt4:
 
-> pip install pytesseract
+> xcode-select --install
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install cartr/qt4/pyqt
+brew install python
+
+## Adding to your PYTHONPATH
+> /usr/local/Cellar/python/2.7.13/Frameworks/Python.Framework/Version/2.7/bin/python2.7
+/usr/local/Cellar/pyqt/
+
+###### thanks to robonobodojo for the excellent guide
