@@ -1,4 +1,5 @@
-import shared
+from shared import global_variables as global_variables
+from shared import global_constants as global_constants
 
 # required for image processing
 from PIL import Image as img
@@ -49,6 +50,10 @@ class ImageText:
         relevant_text.update(self.find_datetime())
         relevant_text.update(self.find_total_amount())
 
+        if global_variables.DEBUG:
+            self.__debug_text_and_relevant_text(relevant_text)
+            relevant_text = self.__debug_append_original_text(relevant_text)
+
         return relevant_text
 
     def find_address(self):
@@ -77,7 +82,7 @@ class ImageText:
             "date": date,
             "time": time
         }
-        
+
         return date_time
 
     def __max_amounts(self, money_list):
@@ -119,3 +124,13 @@ class ImageText:
             return None
         else:
             return match.group()
+
+    def __debug_text_and_relevant_text(self, relevant_text):
+        print "The original text was : %s" % (self.text)
+        print "The relevant text was : %s" % (relevant_text)
+
+    def __debug_append_original_text(self, relevant):
+        return {
+            "original text": self.text,
+            "relevant text": relevant
+        }

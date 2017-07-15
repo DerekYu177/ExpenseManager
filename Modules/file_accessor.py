@@ -11,10 +11,7 @@ import re
 def all_photos_in_location():
     global_variables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
 
-
     photos = PhotoFinder().find_photos()
-
-
 
     return photos
 
@@ -33,9 +30,7 @@ class PhotoFinder:
                 photos.append(photo)
 
         if global_variables.DEBUG:
-            print "All the files located in the receipt location %s are %s" % (
-             global_variables.RECEIPT_LOCATION, self.print_list_to_string(photos)
-            )
+            self.__debug_print_all_photo_files_in_location(photos)
 
         return photos
 
@@ -65,3 +60,8 @@ class PhotoFinder:
             string = item_list
 
         return string
+
+    def __debug_print_all_photo_files_in_location(observed_photos):
+        print "All the photo files located in the receipt location %s are %s" % (
+         global_variables.RECEIPT_LOCATION, self.print_list_to_string(observed_photos)
+        )

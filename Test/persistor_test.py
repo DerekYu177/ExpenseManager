@@ -5,16 +5,15 @@ from ..Modules.shared import global_variables as global_variables
 
 
 class TestMethods(unittest.TestCase):
-    @classmethod
-    def setup_class(cls):
+    def setup_method(self, method):
         global p, test_data, test_data2
         p = persistor.Persistor()
 
         test_data = ["06/28/17-19:18:42", "Milton B 3498 Ave du parc", "4.40", "test data"]
         test_data2 = ["06/28/17-19:18:43", "Milton B 3498 Ave du parc", "4.40", "test data"]
 
-    @classmethod
-    def teardown_class(cls):
+    # we need to teardown after every method
+    def teardown_method(self, method):
         p.clear_file()
 
     def test_initializa_data_file(self):
@@ -23,6 +22,9 @@ class TestMethods(unittest.TestCase):
         assert os.path.isfile(global_constants.PERSISTED_DATA_PATH)
 
     def test_persist(self):
+
+        global_variables.DEBUG = True
+
         p.persist(test_data)
         p.persist(test_data2)
 
@@ -33,6 +35,12 @@ class TestMethods(unittest.TestCase):
         expected = "06/28/17-19:18:42,Milton B 3498 Ave du parc,4.40,test data\n06/28/17-19:18:43,Milton B 3498 Ave du parc,4.40,test data\n"
 
         assert contents == expected
+
+    def test_does_data_exist(self):
+        p.persist(test_data)
+        p.persist(test_data2)
+
+        assert p.does_data_exist(test_data2) == True
 
     def test_clear_file(self):
         p.persist(test_data)
