@@ -11,19 +11,15 @@ pytesseract.pytesseract.tesseract_cmd = shared.global_constants.PYTESSERACT_LOCA
 import re
 
 def text_from_image(image):
+    image_location = shared.global_variables.IMAGE_LOCATION + "/" + image
+
     text = pytesseract.image_to_string(
-        img.open(shared.global_variables.IMAGE_LOCATION + "/" + image)
+        img.open(image_location)
     )
 
     s = ImageText(text)
 
-    relevant_text = s.relevant_text()
-
-    if shared.global_variables.DEBUG:
-        return text, relevant_text
-    else:
-        return relevant_text
-
+    return s.relevant_text()
 
 def enhance(image, enhance_factor, contrast_factor, sharpen_factor):
     # TODO: Does this even work?
