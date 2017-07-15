@@ -1,29 +1,28 @@
 This is be roughly split into three parts: Input, Process, Output
 
-> to view markdown in atom, use ctrl-shift-m
+## Operation
+#### Input
 
-##### Input
-
-Getting the photo. This can take several different forms depending on what the format is. The easiest is to wait until all the photos have been taken (one photo per receipt).
-  1. These photos can be grabbed directly from where they are stored.
-  2. This does mean that when they are imported into the Apple Photos app, they need to be exported. Each export group can be automatically tagged with the date, making each export easier
+Getting the photo. We wait until the photos have been imported onto the processing computer.
+  1. We query the user to determine the relevant folder (_ui still under construction_)
+  2. We run over all of the photos to determine which ones are receipts (_can we use ML for this?_)
 
   _Investigation onto Photos naming scheme still needed._
 
-##### Process
+#### Process
 
-We apply CV onto each photo to extract relevant tags and attributes.
+We apply OCR onto each photo to extract relevant tags and attributes.
 
-  1. Duplicate photos are ignored once if their attributes are the same. (A property if imported photos are automatically deleted)
-  2. For questionable attributes, the computer will prompt with a image of the text in question. _(Can ML be used to improve this accuracy?)_
-  3. Receipts are then extracted and indexed into another folder. (All receipts which are a month old can be deleted)
-  4. Relevant Metadata is also collected from the photo for context.
+  1. The extracted data currently is the date-time, and the total amount. (_currently working on the address_)
+  2. This extracted data is then compared to the database, where duplicates are ignored. (We have the time attribute so this should be okay). Unique entries are inserted into the relevant line.
+  3. For questionable attributes such as the address, the computer will prompt with a image of the text in question. _(Can ML be used to improve this accuracy?)_
 
-##### Output
+#### Output
 
-Photos which are receipts are indexed and the data should be added to a CSV file. Technically any format is okay as long as the data exists.
+We log all data into a .csv file.
 
 ## Installation Process
+### required packages
 
 ```
 brew install tesseract
@@ -31,7 +30,7 @@ pip install Pillow
 pip install pytesseract
 ```
 
-## To get homebrew w/ python2.7 and PyQt4:
+### To get homebrew w/ python2.7 and PyQt4:
 
 ```
 xcode-select --install
@@ -40,7 +39,7 @@ brew install cartr/qt4/pyqt
 brew install python
 ```
 
-## Adding to your PYTHONPATH
+### Adding to your PYTHONPATH
 ```
  /usr/local/Cellar/python/2.7.13/Frameworks/Python.Framework/Version/2.7/bin/python2.7
 /usr/local/Cellar/pyqt/
@@ -48,3 +47,5 @@ brew install python
 
 ##### credits
 - `robonobodojo` for the excellent guide
+
+> to view markdown in atom, use ctrl-shift-m
