@@ -1,16 +1,30 @@
 import unittest, pytest, os
 from ..Modules import persistor
-from ..Modules.shared import global_constants as global_constants
-from ..Modules.shared import global_variables as global_variables
+from ..Modules.shared import global_constants
+from ..Modules.shared import global_variables
 
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
-        global p, test_data, test_data2
-        p = persistor.Persistor()
+        global i, p, test_data, test_data2
 
-        test_data = ["06/28/17-19:18:42", "Milton B 3498 Ave du parc", "4.40", "test data"]
-        test_data2 = ["06/28/17-19:18:43", "Milton B 3498 Ave du parc", "4.40", "test data"]
+        test_data = {
+            "date": "07/01/17",
+            "time": "20:48:14",
+            "address": "None",
+            "total_amount": "$2017.21",
+            "description": "test data"
+        }
+
+        test_data2 = {
+            "date": "07/01/17",
+            "time": "20:48:50",
+            "address": "None",
+            "total_amount": "$20.17",
+            "description": "test data"
+        }
+
+        p = persistor.Persistor()
 
     # we need to teardown after every method
     def teardown_method(self, method):
@@ -32,7 +46,7 @@ class TestMethods(unittest.TestCase):
         contents = f.read()
         f.close()
 
-        expected = "06/28/17-19:18:42,Milton B 3498 Ave du parc,4.40,test data\n06/28/17-19:18:43,Milton B 3498 Ave du parc,4.40,test data\n"
+        expected = "07/01/17-20:48:14,None,$2017.21,test data\n07/01/17-20:48:50,None,$20.17,test data\n"
 
         assert contents == expected
 

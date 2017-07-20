@@ -1,5 +1,7 @@
-from shared import global_variables as global_variables
-from shared import global_constants as global_constants
+from shared import global_variables
+from shared import global_constants
+import raw_interpreter
+
 import csv, os
 
 class Persistor:
@@ -30,7 +32,7 @@ class Persistor:
 
     def persist(self, data):
         data_file = open(global_constants.PERSISTED_DATA_PATH, "a") #append
-        write_data = self.__array_to_string(data)
+        write_data = self.__interpret_data(data)
 
         if global_variables.DEBUG:
             self.__debug_attempted_written_data(write_data)
@@ -44,10 +46,10 @@ class Persistor:
         data_file.close()
 
     def does_data_exist(self, data):
-        with open(global_constants.PERSISTED_DATA_PATH, "r") as f:
+        with open(global_constants.PERSISTED_DATA_PATH, "r") as f: #read only
             reader = csv.reader(f, delimiter=",")
-            for row in reader:
-                if data[1] == row[1]: # sort by time
+            for row in reader: # O(N) scability
+                if read_data[1] == row[1]: # sort by time
                     f.close()
                     return True
 
@@ -60,11 +62,8 @@ class Persistor:
     def is_file_empty(self):
         return os.stat(global_constants.PERSISTED_DATA_PATH).st_size == 0
 
-    def __array_to_string(self, arr):
-        try:
-            return ",".join(arr)
-        except TypeError:
-            print "Data format should be in a list"
+    def __interpret_data(self, data):
+        return raw_interpreter.RawInterpreter(data).interpret()
 
     def __debug_file_and_directory(self, directory_exists, file_exists):
         print "file path: %s" % (self.file_path)

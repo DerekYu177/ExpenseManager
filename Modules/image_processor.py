@@ -5,13 +5,13 @@ from shared import global_constants as global_constants
 from PIL import Image as img
 from PIL import ImageEnhance as img_enhance
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = shared.global_constants.PYTESSERACT_LOCATION
+pytesseract.pytesseract.tesseract_cmd = global_constants.PYTESSERACT_LOCATION
 
 # required for text analysis
 import re
 
 def text_from_image(image):
-    image_location = shared.global_variables.IMAGE_LOCATION + "/" + image
+    image_location = global_variables.IMAGE_LOCATION + "/" + image
 
     text = pytesseract.image_to_string(
         img.open(image_location)
@@ -44,28 +44,15 @@ class ImageText:
     def relevant_text(self):
         relevant_text = {}
         relevant_text.update(self.find_datetime())
+        relevant_text.update(self.find_address())
         relevant_text.update(self.find_total_amount())
+        relevant_text.update(self.description())
 
         if global_variables.DEBUG:
             self.__debug_text_and_relevant_text(relevant_text)
             relevant_text = self.__debug_append_original_text(relevant_text)
 
         return relevant_text
-
-    def find_address(self):
-        raise NotImplementedError
-
-    def find_total_amount(self):
-        money_regex = r'[$]\s*\d+\.\d{2}'
-
-        amounts = re.findall(money_regex, self.text)
-        amount = self.__max_amounts(amounts)
-
-        total_amount = {
-            "total_amount": amount,
-        }
-
-        return total_amount
 
     def find_datetime(self):
         date_regex = r'(\d+/\d+/\d+)'
@@ -80,6 +67,31 @@ class ImageText:
         }
 
         return date_time
+
+    def find_address(self):
+        address = {
+            "address": "None" #TODO
+        }
+
+        return address
+
+    def find_total_amount(self):
+        money_regex = r'[$]\s*\d+\.\d{2}'
+
+        amounts = re.findall(money_regex, self.text)
+        amount = self.__max_amounts(amounts)
+
+        total_amount = {
+            "total_amount": amount,
+        }
+
+        return total_amount
+
+    def description(self):
+        description = {
+            "description": "None" #TODO
+        }
+        return description
 
     def __max_amounts(self, money_list):
         max_amount = 0

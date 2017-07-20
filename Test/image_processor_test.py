@@ -47,6 +47,13 @@ class TestMethods(unittest.TestCase):
 
         assert expected == s.find_datetime()
 
+    def test_find_address(self):
+        expected = {
+            "address": "None"
+        }
+
+        assert expected == s.find_address()
+
     def test_find_total_amount(self):
         expected = {
             "total_amount": "$2017.21"
@@ -54,11 +61,20 @@ class TestMethods(unittest.TestCase):
 
         assert expected == s.find_total_amount()
 
+    def test_description(self):
+        expected = {
+            "description": "None"
+        }
+
+        assert expected == s.description()
+
     def test_relevant_text(self):
         expected = {
             "date": "07/01/17",
             "time": "20:48:14",
-            "total_amount": "$2017.21"
+            "address": "None",
+            "total_amount": "$2017.21",
+            "description": "None"
         }
 
         assert expected == s.relevant_text()

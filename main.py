@@ -15,12 +15,14 @@ def main():
     #
     # ui = user_interface.UserInterface()
     # ui.display_image(path)
+    print file_accessor.all_photos_in_location()
 
 main()
 
 def execute():
     # access list of all photo files
     list_of_photos_files = file_accessor.all_photos_in_location()
-    #
+
+    # iterate over all photos in list_of_photos_files
     for photo_file in list_of_photos_files:
         image_processor.text_from_image(photo_file)

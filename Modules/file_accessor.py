@@ -17,7 +17,7 @@ def all_photos_in_location():
 
 class PhotoFinder:
 
-    def __init__(self, ):
+    def __init__(self):
         pass
 
     def find_photos(self):
