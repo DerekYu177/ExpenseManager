@@ -49,7 +49,6 @@ class ImageData:
         address = self.address[:self.MAX_ADDRESS_LENGTH-3]
         address = address + "..."
 
-        print address
         return address
 
     def __debug_print_attributes(self):
