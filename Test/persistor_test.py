@@ -1,14 +1,18 @@
 import unittest, pytest, os
-from ..Modules import persistor
+from ..Modules.persistor import Persistor
 from ..Modules.shared import global_constants
 from ..Modules.shared import global_variables
 from ..Modules.image_data import ImageData
-
+from ..Modules.data_file_helper import DataFileHelper
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
-        global id1, id2, p
-        p = persistor.Persistor()
+        global id1, id2, p, dfh
+
+        dfh = DataFileHelper()
+        dfh.initialize_data_file()
+        
+        p = Persistor()
 
         id1 = ImageData({
             "date": "07/01/17",
@@ -28,12 +32,7 @@ class TestMethods(unittest.TestCase):
 
     # we need to teardown after every method
     def teardown_method(self, method):
-        p.clear_file()
-
-    def test_initializa_data_file(self):
-        p.initialize_data_file()
-
-        assert os.path.isfile(global_constants.PERSISTED_DATA_PATH)
+        dfh.clear_file()
 
     def test_persist(self):
 
@@ -55,12 +54,3 @@ class TestMethods(unittest.TestCase):
         p.persist(id2)
 
         assert p.does_data_exist(id2) == True
-
-    def test_clear_file(self):
-        p.persist(id1)
-        p.clear_file()
-
-        assert p.is_file_empty()
-
-    # def test_find_value(self):
-    #     raise NotImplementedError
