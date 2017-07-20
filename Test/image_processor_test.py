@@ -1,6 +1,7 @@
 import unittest
 import pytest
 from ..Modules import image_processor as image_processor
+from ..Modules import image_data as image_data
 
 class TestMethods(unittest.TestCase):
     @classmethod
@@ -36,7 +37,7 @@ class TestMethods(unittest.TestCase):
             $ 291.20
             """
 
-        s = image_processor.ImageText(text)
+        s = image_processor.ImageTextSearch(text)
 
 
     def test_find_datetime(self):
@@ -68,8 +69,8 @@ class TestMethods(unittest.TestCase):
 
         assert expected == s.description()
 
-    def test_relevant_text(self):
-        expected = {
+    def test_image_data(self):
+        attrs = {
             "date": "07/01/17",
             "time": "20:48:14",
             "address": "None",
@@ -77,4 +78,9 @@ class TestMethods(unittest.TestCase):
             "description": "None"
         }
 
-        assert expected == s.relevant_text()
+        method_call = s.image_data()
+
+        assert isinstance(method_call, image_data.ImageData)
+
+        for attr, attr_val in attrs.iteritems():
+            assert(attr_val == method_call.__dict__[attr])

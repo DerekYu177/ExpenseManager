@@ -1,6 +1,6 @@
 from shared import global_variables
 
-class RawInterpreter:
+class ImageData:
     MAX_ADDRESS_LENGTH = 10
 
     def __init__(self, data):
@@ -24,23 +24,26 @@ class RawInterpreter:
         if global_variables.DEBUG:
             self.__debug_print_attributes()
 
-    def interpret(self):
+    def as_csv_text(self):
         self.attr_list = [
-            self.date_time(),
-            self.short_address(),
+            self.__date_time(),
+            self.__shorten_address(),
             self.total_amount,
             self.description
         ]
 
         return ",".join(self.attr_list)
 
-    def date_time(self):
-        date = self.date.replace("\'","")
-        time = self.time.replace("\:", "")
+    def identifier(self):
+        return self.__date_time()
+
+    def __date_time(self):
+        date = self.date.replace("/","")
+        time = self.time
 
         return "%s-%s" % (date, time)
 
-    def short_address(self):
+    def __shorten_address(self):
         if len(self.address) < self.MAX_ADDRESS_LENGTH: return self.address
 
         address = self.address[:self.MAX_ADDRESS_LENGTH-3]

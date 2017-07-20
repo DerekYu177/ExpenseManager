@@ -1,5 +1,6 @@
 from shared import global_variables as global_variables
 from shared import global_constants as global_constants
+import image_data
 
 # required for image processing
 from PIL import Image as img
@@ -10,38 +11,25 @@ pytesseract.pytesseract.tesseract_cmd = global_constants.PYTESSERACT_LOCATION
 # required for text analysis
 import re
 
-def text_from_image(image):
+def image_data_from_image(image):
     image_location = global_variables.IMAGE_LOCATION + "/" + image
 
     text = pytesseract.image_to_string(
         img.open(image_location)
     )
 
-    s = ImageText(text)
+    s = ImageTextSearch(text)
 
-    return s.relevant_text()
-
-def enhance(image, enhance_factor, contrast_factor, sharpen_factor):
-    # TODO: Does this even work?
-    enhanced_image = img_enhance._Enhance(image)
-    enhanced_image.enhance(enhance_factor)
-
-    contrasted_image = img_enhance.Contrast(enhanced_image)
-    contrasted_image.enhance(contrast_factor)
-
-    sharpened_image = img_enhance.Sharpness(contrasted_image)
-    sharpened_image.enhance(sharpen_factor)
-
-    return sharpened_image
+    return s.image_data()
 
 #[Time, Location, Cost, Description]
 
-class ImageText:
+class ImageTextSearch:
 
     def __init__(self, text):
         self.text = text
 
-    def relevant_text(self):
+    def image_data(self):
         relevant_text = {}
         relevant_text.update(self.find_datetime())
         relevant_text.update(self.find_address())
@@ -52,7 +40,7 @@ class ImageText:
             self.__debug_text_and_relevant_text(relevant_text)
             relevant_text = self.__debug_append_original_text(relevant_text)
 
-        return relevant_text
+        return image_data.ImageData(relevant_text)
 
     def find_datetime(self):
         date_regex = r'(\d+/\d+/\d+)'
