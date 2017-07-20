@@ -1,18 +1,18 @@
-from shared import global_variables as global_variables
-from shared import global_constants as global_constants
+from shared import GlobalVariables as GlobalVariables
+from shared import GlobalConstants as GlobalConstants
 import image_data
 
 # required for image processing
 from PIL import Image as img
 from PIL import ImageEnhance as img_enhance
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = global_constants.PYTESSERACT_LOCATION
+pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
 # required for text analysis
 import re
 
 def image_data_from_image(image):
-    image_location = global_variables.IMAGE_LOCATION + "/" + image
+    image_location = GlobalVariables.IMAGE_LOCATION + "/" + image
 
     text = pytesseract.image_to_string(
         img.open(image_location)
@@ -36,7 +36,7 @@ class ImageTextSearch:
         relevant_text.update(self.find_total_amount())
         relevant_text.update(self.description())
 
-        if global_variables.DEBUG:
+        if GlobalVariables.DEBUG:
             self.__debug_text_and_relevant_text(relevant_text)
             relevant_text = self.__debug_append_original_text(relevant_text)
 

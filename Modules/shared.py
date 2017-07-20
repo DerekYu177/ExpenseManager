@@ -3,14 +3,14 @@ import os
 
 directory = os.getcwd()
 
-class global_variables:
+class GlobalVariables:
     RECEIPT_LOCATION = ""
 
     IMAGE_LOCATION = '%s/Test/Images' % (directory)
 
     DEBUG = False
 
-class global_constants:
+class GlobalConstants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'
 
     PERSISTED_DATA = 'persisted_data.csv'

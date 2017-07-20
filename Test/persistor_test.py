@@ -1,7 +1,7 @@
 import unittest, pytest, os
 from ..Modules.persistor import Persistor
-from ..Modules.shared import global_constants
-from ..Modules.shared import global_variables
+from ..Modules.shared import GlobalConstants
+from ..Modules.shared import GlobalVariables
 from ..Modules.image_data import ImageData
 from ..Modules.data_file_helper import DataFileHelper
 
@@ -36,12 +36,12 @@ class TestMethods(unittest.TestCase):
 
     def test_persist(self):
 
-        global_variables.DEBUG = True
+        GlobalVariables.DEBUG = True
 
         p.persist(id1)
         p.persist(id2)
 
-        f = open(global_constants.PERSISTED_DATA_PATH, "r")
+        f = open(GlobalConstants.PERSISTED_DATA_PATH, "r")
         contents = f.read()
         f.close()
 

@@ -21,13 +21,13 @@ class TestMethods(unittest.TestCase):
         assert pf.print_list_to_string(test_list) == test_list
 
     def test_find_photos_when_glb_var_not_instantiated_raises_error(self):
-        shared.global_variables.RECEIPT_LOCATION = ""
+        shared.GlobalVariables.RECEIPT_LOCATION = ""
         with pytest.raises(EnvironmentError) as error:
             pf.find_photos()
         error.match(r'Receipt location not initialized')
 
     def test_find_photos(self):
-        shared.global_variables.RECEIPT_LOCATION = shared.global_variables.IMAGE_LOCATION
+        shared.GlobalVariables.RECEIPT_LOCATION = shared.GlobalVariables.IMAGE_LOCATION
 
         assert len(pf.find_photos()) == 5
 

@@ -1,4 +1,4 @@
-from shared import global_variables
+from shared import GlobalVariables
 import user_interface
 
 # for retrieving all files in directory
@@ -9,7 +9,7 @@ from os.path import isfile
 import re
 
 def all_photos_in_location():
-    global_variables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
+    GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
 
     photos = PhotoFinder().find_photos()
 
@@ -21,15 +21,15 @@ class PhotoFinder:
         pass
 
     def find_photos(self):
-        if not global_variables.RECEIPT_LOCATION:
+        if not GlobalVariables.RECEIPT_LOCATION:
             raise EnvironmentError('Receipt location not initialized')
 
         photos = []
-        for photo in listdir(global_variables.RECEIPT_LOCATION):
+        for photo in listdir(GlobalVariables.RECEIPT_LOCATION):
             if self.is_photo(photo):
                 photos.append(photo)
 
-        if global_variables.DEBUG:
+        if GlobalVariables.DEBUG:
             self.__debug_print_all_photo_files_in_location(photos)
 
         return photos
@@ -63,5 +63,5 @@ class PhotoFinder:
 
     def __debug_print_all_photo_files_in_location(observed_photos):
         print "All the photo files located in the receipt location %s are %s" % (
-         global_variables.RECEIPT_LOCATION, self.print_list_to_string(observed_photos)
+         GlobalVariables.RECEIPT_LOCATION, self.print_list_to_string(observed_photos)
         )

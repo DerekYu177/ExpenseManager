@@ -1,4 +1,4 @@
-from shared import global_variables
+from shared import GlobalVariables
 
 class ImageData:
     MAX_ADDRESS_LENGTH = 10
@@ -21,7 +21,7 @@ class ImageData:
         self.total_amount = data["total_amount"]
         self.description = data["description"]
 
-        if global_variables.DEBUG:
+        if GlobalVariables.DEBUG:
             self.__debug_print_attributes()
 
     def as_csv_text(self):

@@ -11,7 +11,7 @@ import Modules.user_interface       as user_interface
 def main():
     # print image_processor.text_from_image("grocery_store.jpg")
 
-    # path = "%s/medium_def_receipt.jpg" % (shared.global_variables.IMAGE_LOCATION)
+    # path = "%s/medium_def_receipt.jpg" % (shared.GlobalVariables.IMAGE_LOCATION)
     #
     # ui = user_interface.UserInterface()
     # ui.display_image(path)

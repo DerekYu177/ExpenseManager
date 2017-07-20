@@ -1,6 +1,6 @@
 import unittest, pytest
-from ..Modules.shared import global_constants
-from ..Modules.shared import global_variables
+from ..Modules.shared import GlobalConstants
+from ..Modules.shared import GlobalVariables
 from ..Modules.image_data import ImageData
 
 
