@@ -1,6 +1,8 @@
-from shared         import GlobalVariables
-from shared         import GlobalConstants
-from image_data     import ImageData
+from ..shared         import GlobalVariables
+from ..shared         import GlobalConstants
+
+# passing data
+from ..image_data     import ImageData
 
 # image processing
 from PIL import Image as img

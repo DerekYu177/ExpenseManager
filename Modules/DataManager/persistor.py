@@ -1,5 +1,5 @@
-from shared import GlobalVariables
-from shared import GlobalConstants
+from ..shared import GlobalVariables
+from ..shared import GlobalConstants
 
 import csv
 import os
@@ -10,7 +10,7 @@ class Persistor:
         # assume that the file exists
         pass
 
-    def persist(self, write_data):
+    def persist_data(self, write_data):
         data_file = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
 
         if GlobalVariables.DEBUG:

@@ -1,5 +1,5 @@
-from shared import GlobalVariables
-from shared import GlobalConstants
+from ..shared import GlobalVariables
+from ..shared import GlobalConstants
 
 import os
 

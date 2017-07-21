@@ -1,19 +1,15 @@
-from shared import GlobalVariables
-import user_interface
+from ..shared   import GlobalVariables
 
 # for retrieving all files in directory
-from os import listdir
-from os.path import isfile
+from os         import listdir
+from os.path    import isfile
 
 # to determine if a valid photo
 import re
 
-def all_photos_in_location():
-    GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
-
-    photos = PhotoFileFinder().find_photos()
-
-    return photos
+def get_photo_names():
+    # we assume that GlobalVariables is already set
+    return PhotoFileFinder().find_photos()
 
 class PhotoFileFinder:
 
