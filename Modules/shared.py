@@ -1,4 +1,3 @@
-# Grabbing current directory
 import os
 
 directory = os.getcwd()

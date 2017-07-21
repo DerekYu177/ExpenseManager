@@ -1,13 +1,13 @@
 import unittest
 import pytest
-from ..Modules import file_accessor as file_accessor
+from ..Modules import photo_file_finder as photo_file_finder
 from ..Modules import shared as shared
 
 class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
         global pf
-        pf = file_accessor.PhotoFinder()
+        pf = photo_file_finder.PhotoFileFinder()
 
     def test_print_list_to_string(self):
         test_list = ["a", "b", "c", "d"]

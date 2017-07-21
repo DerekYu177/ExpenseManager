@@ -1,8 +1,8 @@
 from shared import GlobalVariables
 from shared import GlobalConstants
-import image_data
 
-import csv, os
+import csv
+import os
 
 class Persistor:
 

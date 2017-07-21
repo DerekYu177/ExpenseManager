@@ -11,11 +11,11 @@ import re
 def all_photos_in_location():
     GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
 
-    photos = PhotoFinder().find_photos()
+    photos = PhotoFileFinder().find_photos()
 
     return photos
 
-class PhotoFinder:
+class PhotoFileFinder:
 
     def __init__(self):
         pass

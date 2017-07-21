@@ -1,14 +1,15 @@
-from shared import GlobalVariables as GlobalVariables
-from shared import GlobalConstants as GlobalConstants
-import image_data
+from shared         import GlobalVariables
+from shared         import GlobalConstants
+from image_data     import ImageData
 
-# required for image processing
+# image processing
 from PIL import Image as img
-from PIL import ImageEnhance as img_enhance
 import pytesseract
+
+# set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
-# required for text analysis
+# text analysis
 import re
 
 def image_data_from_image(image):
@@ -18,9 +19,9 @@ def image_data_from_image(image):
         img.open(image_location)
     )
 
-    s = ImageTextSearch(text)
+    its = ImageTextSearch(text)
 
-    return s.image_data()
+    return its.analyze()
 
 #[Time, Location, Cost, Description]
 
@@ -29,7 +30,7 @@ class ImageTextSearch:
     def __init__(self, text):
         self.text = text
 
-    def image_data(self):
+    def analyze(self):
         relevant_text = {}
         relevant_text.update(self.find_datetime())
         relevant_text.update(self.find_address())
@@ -40,7 +41,7 @@ class ImageTextSearch:
             self.__debug_text_and_relevant_text(relevant_text)
             relevant_text = self.__debug_append_original_text(relevant_text)
 
-        return image_data.ImageData(relevant_text)
+        return ImageData(relevant_text)
 
     def find_datetime(self):
         date_regex = r'(\d+/\d+/\d+)'

@@ -2,7 +2,7 @@
 
 # built-in classes
 import Modules.shared               as shared
-import Modules.file_accessor        as file_accessor
+import Modules.photo_file_finder    as photo_file_finder
 import Modules.persistor            as persistor
 import Modules.image_processor      as image_processor
 import Modules.debug                as debug
@@ -15,13 +15,13 @@ def main():
     #
     # ui = user_interface.UserInterface()
     # ui.display_image(path)
-    print file_accessor.all_photos_in_location()
+    print photo_file_finder.all_photos_in_location()
 
 main()
 
 def execute():
     # access list of all photo files
-    list_of_photos_files = file_accessor.all_photos_in_location()
+    list_of_photos_files = photo_file_finder.all_photos_in_location()
 
     # iterate over all photos in list_of_photos_files
     for photo_file in list_of_photos_files:
