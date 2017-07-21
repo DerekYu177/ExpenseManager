@@ -2,12 +2,12 @@ from PIL import Image as img
 import pytesseract
 import re
 
-# set the path to the tesseract package
-pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
-
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
 from ..image_data     import ImageData
+
+# set the path to the tesseract package
+pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
 def image_data_from_image(image):
     image_location = GlobalVariables.IMAGE_LOCATION + "/" + image
@@ -36,7 +36,7 @@ class ImageTextSearch:
 
         if GlobalVariables.DEBUG:
             self.__debug_text_and_relevant_text(relevant_text)
-            relevant_text = self.__debug_append_original_text(relevant_text)
+            relevant_text.update(self.__debug_append_original_text(relevant_text))
 
         return ImageData(relevant_text)
 
@@ -126,5 +126,4 @@ class ImageTextSearch:
     def __debug_append_original_text(self, relevant):
         return {
             "original text": self.text,
-            "relevant text": relevant
         }

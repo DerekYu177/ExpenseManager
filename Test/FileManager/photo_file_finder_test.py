@@ -1,13 +1,14 @@
 import unittest
 import pytest
-from ..Modules import photo_file_finder as photo_file_finder
-from ..Modules import shared as shared
+
+from ...Modules.FileManager.photo_file_finder import PhotoFileFinder
+from ...Modules.shared import GlobalVariables
 
 class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
         global pf
-        pf = photo_file_finder.PhotoFileFinder()
+        pf = PhotoFileFinder()
 
     def test_print_list_to_string(self):
         test_list = ["a", "b", "c", "d"]
@@ -21,13 +22,14 @@ class TestMethods(unittest.TestCase):
         assert pf.print_list_to_string(test_list) == test_list
 
     def test_find_photos_when_glb_var_not_instantiated_raises_error(self):
-        shared.GlobalVariables.RECEIPT_LOCATION = ""
+        GlobalVariables.RECEIPT_LOCATION = ""
+
         with pytest.raises(EnvironmentError) as error:
             pf.find_photos()
         error.match(r'Receipt location not initialized')
 
     def test_find_photos(self):
-        shared.GlobalVariables.RECEIPT_LOCATION = shared.GlobalVariables.IMAGE_LOCATION
+        GlobalVariables.RECEIPT_LOCATION = GlobalVariables.IMAGE_LOCATION
 
         assert len(pf.find_photos()) == 5
 

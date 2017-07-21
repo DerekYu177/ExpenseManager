@@ -1,12 +1,12 @@
 import unittest
 import pytest
-from ..Modules import image_processor as image_processor
-from ..Modules import image_data as image_data
+from ...Modules.PhotoAnalyzer import image_processor
+from ...Modules.image_data import ImageData
 
 class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
-        global s
+        global its
 
         text = """
             caFE PARVIS
@@ -37,8 +37,7 @@ class TestMethods(unittest.TestCase):
             $ 291.20
             """
 
-        s = image_processor.ImageTextSearch(text)
-
+        its = image_processor.ImageTextSearch(text)
 
     def test_find_datetime(self):
         expected = {
@@ -46,30 +45,30 @@ class TestMethods(unittest.TestCase):
             "time": "20:48:14"
         }
 
-        assert expected == s.find_datetime()
+        assert expected == its.find_datetime()
 
     def test_find_address(self):
         expected = {
             "address": "None"
         }
 
-        assert expected == s.find_address()
+        assert expected == its.find_address()
 
     def test_find_total_amount(self):
         expected = {
             "total_amount": "$2017.21"
         }
 
-        assert expected == s.find_total_amount()
+        assert expected == its.find_total_amount()
 
     def test_description(self):
         expected = {
             "description": "None"
         }
 
-        assert expected == s.description()
+        assert expected == its.description()
 
-    def test_image_data(self):
+    def test_analyze(self):
         attrs = {
             "date": "07/01/17",
             "time": "20:48:14",
@@ -78,9 +77,11 @@ class TestMethods(unittest.TestCase):
             "description": "None"
         }
 
-        method_call = s.image_data()
+        image_data = its.analyze()
 
-        assert isinstance(method_call, image_data.ImageData)
+        assert isinstance(image_data, ImageData)
+
+        print image_data
 
         for attr, attr_val in attrs.iteritems():
-            assert(attr_val == method_call.__dict__[attr])
+            assert(attr_val == image_data.__dict__[attr])

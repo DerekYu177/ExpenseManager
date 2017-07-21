@@ -54,7 +54,7 @@ class PhotoFileFinder:
 
         return string
 
-    def __debug_print_all_photo_files_in_location(observed_photos):
+    def __debug_print_all_photo_files_in_location(self, observed_photos):
         print "All the photo files located in the receipt location %s are %s" % (
          GlobalVariables.RECEIPT_LOCATION, self.print_list_to_string(observed_photos)
         )
