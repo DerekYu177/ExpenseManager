@@ -1,11 +1,8 @@
-from ..shared   import GlobalVariables
-
-# for retrieving all files in directory
 from os         import listdir
 from os.path    import isfile
-
-# to determine if a valid photo
 import re
+
+from ..shared   import GlobalVariables
 
 def get_photo_names():
     # we assume that GlobalVariables is already set

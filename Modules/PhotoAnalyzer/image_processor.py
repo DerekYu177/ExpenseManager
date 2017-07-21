@@ -1,18 +1,13 @@
-from ..shared         import GlobalVariables
-from ..shared         import GlobalConstants
-
-# passing data
-from ..image_data     import ImageData
-
-# image processing
 from PIL import Image as img
 import pytesseract
+import re
 
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
-# text analysis
-import re
+from ..shared         import GlobalVariables
+from ..shared         import GlobalConstants
+from ..image_data     import ImageData
 
 def image_data_from_image(image):
     image_location = GlobalVariables.IMAGE_LOCATION + "/" + image

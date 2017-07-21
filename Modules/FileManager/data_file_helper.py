@@ -1,7 +1,7 @@
+import os
+
 from ..shared import GlobalVariables
 from ..shared import GlobalConstants
-
-import os
 
 class DataFileHelper:
 
