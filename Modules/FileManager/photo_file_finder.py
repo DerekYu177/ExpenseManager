@@ -1,19 +1,12 @@
-from shared import GlobalVariables
-import user_interface
-
-# for retrieving all files in directory
-from os import listdir
-from os.path import isfile
-
-# to determine if a valid photo
+from os         import listdir
+from os.path    import isfile
 import re
 
-def all_photos_in_location():
-    GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
+from ..shared   import GlobalVariables
 
-    photos = PhotoFileFinder().find_photos()
-
-    return photos
+def get_photo_names():
+    # we assume that GlobalVariables is already set
+    return PhotoFileFinder().find_photos()
 
 class PhotoFileFinder:
 
@@ -61,7 +54,7 @@ class PhotoFileFinder:
 
         return string
 
-    def __debug_print_all_photo_files_in_location(observed_photos):
+    def __debug_print_all_photo_files_in_location(self, observed_photos):
         print "All the photo files located in the receipt location %s are %s" % (
          GlobalVariables.RECEIPT_LOCATION, self.print_list_to_string(observed_photos)
         )

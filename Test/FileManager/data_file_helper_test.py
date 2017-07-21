@@ -1,7 +1,6 @@
 import unittest, pytest, os
-from ..Modules.data_file_helper import DataFileHelper
-from ..Modules.shared import GlobalConstants
-from ..Modules.shared import GlobalVariables
+
+from ...Modules.FileManager.data_file_helper import DataFileHelper
 
 class TestMethods(unittest.TestCase):
     def test_create_and_destroy_file(self):

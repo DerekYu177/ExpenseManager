@@ -1,9 +1,9 @@
 import unittest, pytest, os
-from ..Modules.persistor import Persistor
-from ..Modules.shared import GlobalConstants
-from ..Modules.shared import GlobalVariables
-from ..Modules.image_data import ImageData
-from ..Modules.data_file_helper import DataFileHelper
+from ...Modules.DataManager.persistor import Persistor
+
+from ...Modules import shared
+from ...Modules.image_data import ImageData
+from ...Modules.FileManager.data_file_helper import DataFileHelper
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
@@ -11,7 +11,7 @@ class TestMethods(unittest.TestCase):
 
         dfh = DataFileHelper()
         dfh.initialize_data_file()
-        
+
         p = Persistor()
 
         id1 = ImageData({
@@ -33,15 +33,17 @@ class TestMethods(unittest.TestCase):
     # we need to teardown after every method
     def teardown_method(self, method):
         dfh.clear_file()
+        shared.GlobalVariables.DEBUG = False
 
-    def test_persist(self):
 
-        GlobalVariables.DEBUG = True
+    def test_persist_data(self):
 
-        p.persist(id1)
-        p.persist(id2)
+        shared.GlobalVariables.DEBUG = True
 
-        f = open(GlobalConstants.PERSISTED_DATA_PATH, "r")
+        p.persist_data(id1)
+        p.persist_data(id2)
+
+        f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
         contents = f.read()
         f.close()
 
@@ -50,7 +52,7 @@ class TestMethods(unittest.TestCase):
         assert contents == expected
 
     def test_does_data_exist(self):
-        p.persist(id1)
-        p.persist(id2)
+        p.persist_data(id1)
+        p.persist_data(id2)
 
         assert p.does_data_exist(id2) == True
