@@ -6,6 +6,8 @@
 
 # pytest / unittest automatically generated files
 .cache
+*/__pycache__/
+
 
 # All persistent data
 # Data/*
