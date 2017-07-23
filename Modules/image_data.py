@@ -1,7 +1,6 @@
-from shared import GlobalVariables
-
 class ImageData:
     MAX_ADDRESS_LENGTH = 10
+    LOCAL_DEBUG = False
 
     def __init__(self, data):
 
@@ -21,7 +20,7 @@ class ImageData:
         self.total_amount = data["total_amount"]
         self.description = data["description"]
 
-        if GlobalVariables.DEBUG:
+        if self.LOCAL_DEBUG:
             self.__debug_print_attributes()
 
     def as_csv_text(self):

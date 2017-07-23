@@ -24,6 +24,8 @@ def image_data_from_image(image):
 
 class ImageTextSearch:
 
+    LOCAL_DEBUG = False
+
     def __init__(self, text):
         self.text = text
 
@@ -34,7 +36,7 @@ class ImageTextSearch:
         relevant_text.update(self.find_total_amount())
         relevant_text.update(self.description())
 
-        if GlobalVariables.DEBUG:
+        if self.LOCAL_DEBUG:
             self.__debug_text_and_relevant_text(relevant_text)
             relevant_text.update(self.__debug_append_original_text(relevant_text))
 

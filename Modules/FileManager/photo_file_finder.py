@@ -10,6 +10,8 @@ def get_photo_names():
 
 class PhotoFileFinder:
 
+    LOCAL_DEBUG = False
+
     def __init__(self):
         pass
 
@@ -22,7 +24,7 @@ class PhotoFileFinder:
             if self.is_photo(photo):
                 photos.append(photo)
 
-        if GlobalVariables.DEBUG:
+        if self.LOCAL_DEBUG:
             self.__debug_print_all_photo_files_in_location(photos)
 
         return photos

@@ -1,10 +1,11 @@
 import csv
 import os
 
-from ..shared import GlobalVariables
 from ..shared import GlobalConstants
 
 class Persistor:
+
+    LOCAL_DEBUG = False
 
     def __init__(self):
         # assume that the file exists
@@ -13,13 +14,13 @@ class Persistor:
     def persist_data(self, write_data):
         data_file = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
 
-        if GlobalVariables.DEBUG:
+        if self.LOCAL_DEBUG:
             self.__debug_attempted_written_data(write_data)
 
         write_data_with_newline = write_data.as_csv_text() + "\n"
         data_file.write(write_data_with_newline)
 
-        if GlobalVariables.DEBUG:
+        if self.LOCAL_DEBUG:
             self.__debug_successful_written_data(write_data)
 
         data_file.close()
