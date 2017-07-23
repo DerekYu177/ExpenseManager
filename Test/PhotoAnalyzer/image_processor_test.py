@@ -85,3 +85,8 @@ class TestMethods(unittest.TestCase):
 
         for attr, attr_val in attrs.iteritems():
             assert(attr_val == image_data.__dict__[attr])
+
+    def test_is_photo_receipt(self):
+        its = image_processor.ImageTextSearch("text")
+
+        assert its.is_photo_receipt() == False

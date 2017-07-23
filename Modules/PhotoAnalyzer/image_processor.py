@@ -1,6 +1,7 @@
 from PIL import Image as img
 import pytesseract
 import re
+import sys
 
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
@@ -26,85 +27,106 @@ def image_data_from_image(image):
 #[Time, Location, Cost, Description]
 
 class ImageTextSearch:
+    ANALYSIS_ATTRIBUTES = [
+        "date",
+        "time",
+        "address",
+        "total_amount",
+        "description"
+    ]
+
+    PROCESSED_ATTRIBUTES = [
+        "date",
+        "time",
+        "total_amount"
+    ]
+
 
     def __init__(self, text):
         self.text = text
 
+    def is_photo_receipt(self):
+        self.datetime = self.find_datetime()
+        self.address = self.find_address()
+        self.total_amount = self.find_total_amount()
+        self.description = self.description()
+
+        for attr in PROCESSED_ATTRIBUTES:
+            if not self._dict_[attr]:
+                return False
+
+        return True
+
     def analyze(self):
-        relevant_text = {}
-        relevant_text.update(self.find_datetime())
-        relevant_text.update(self.find_address())
-        relevant_text.update(self.find_total_amount())
-        relevant_text.update(self.description())
+        empty_text = dict.fromkeys(self.ANALYSIS_ATTRIBUTES, None)
+
+        relevant_text = self._set_relevant_text_attributes(empty_text)
 
         if LOCAL_DEBUG:
-            self.__debug_text_and_relevant_text(relevant_text)
-            relevant_text.update(self.__debug_append_original_text(relevant_text))
+            self._debug_text_and_relevant_text(relevant_text)
+            relevant_text.update(self._debug_append_original_text(relevant_text))
 
         return ImageData(relevant_text)
 
-    def find_datetime(self):
+    def _set_relevant_text_attributes(attr_dict):
+        # this just sets all values in attr_dict by calling
+        # find_#{attr} on each one
+        # and returning the result
+        for attr in ANALYSIS_ATTRIBUTES:
+            attr_dict[attr] = getattr(
+                sys.modules[__name__],
+                "_find_%s" %(attr)
+            )
+
+        return attr_dict
+
+    def _find_date(self):
         date_regex = r'(\d+/\d+/\d+)'
+        return self._search_singular_with_regex(date_regex)
+
+    def _find_datetime(self):
         time_regex = r'(\d+:\d+:\d+)'
+        return = self._search_singular_with_regex(time_regex)
 
-        date = self.__search_singular_with_regex(date_regex)
-        time = self.__search_singular_with_regex(time_regex)
+    def _find_address(self):
+        return None # TODO
 
-        date_time = {
-            "date": date,
-            "time": time
-        }
-
-        return date_time
-
-    def find_address(self):
-        address = {
-            "address": "None" #TODO
-        }
-
-        return address
-
-    def find_total_amount(self):
+    def _find_total_amount(self):
         money_regex = r'[$]\s*\d+\.\d{2}'
 
         amounts = re.findall(money_regex, self.text)
-        amount = self.__max_amounts(amounts)
 
-        total_amount = {
-            "total_amount": amount,
-        }
+        if not amounts:
+            return None
 
-        return total_amount
+        return self._max_amounts(amounts)
 
-    def description(self):
-        description = {
-            "description": "None" #TODO
-        }
-        return description
+    def _find_description(self):
+        return None # TODO
 
-    def __max_amounts(self, money_list):
+    def _max_amounts(self, money_list):
         max_amount = 0
 
         for money in money_list:
-            m = self.__strip_dollar_sign(money)
+            m = self._strip_dollar_sign(money)
 
             if m > max_amount:
                 max_amount = m
 
-        return self.__add_dollar_sign(max_amount)
+        return self._add_dollar_sign(max_amount)
 
-    def __strip_dollar_sign(self, money):
+    def _strip_dollar_sign(self, money):
         if money[0] == "$":
             return float(money[1:])
 
-    def __add_dollar_sign(self, number):
+    def _add_dollar_sign(self, number):
         number = str(number)
 
-        number = self.__add_lost_zero(number)
+        number = self._add_lost_zero(number)
 
         return "$" + number
 
-    def __add_lost_zero(self, number):
+    def _add_lost_zero(self, number):
         dollar, cents = number.split('.')
 
         if len(cents) == 0:
@@ -114,7 +136,7 @@ class ImageTextSearch:
         else:
             return number
 
-    def __search_singular_with_regex(self, regex):
+    def _search_singular_with_regex(self, regex):
         match = re.search(regex, self.text)
 
         if match is None:
@@ -122,11 +144,11 @@ class ImageTextSearch:
         else:
             return match.group()
 
-    def __debug_text_and_relevant_text(self, relevant_text):
+    def _debug_text_and_relevant_text(self, relevant_text):
         print "The original text was : %s" % (self.text)
         print "The relevant text was : %s" % (relevant_text)
 
-    def __debug_append_original_text(self, relevant):
+    def _debug_append_original_text(self, relevant):
         return {
             "original text": self.text,
         }
