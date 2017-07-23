@@ -23,4 +23,4 @@ def initialize_files():
     GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
 
     file_helper = data_file_helper.DataFileHelper()
-    file_helper.initialize_data_file
+    file_helper.initialize_data_file()

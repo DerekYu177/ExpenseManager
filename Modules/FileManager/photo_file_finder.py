@@ -4,13 +4,13 @@ import re
 
 from ..shared   import GlobalVariables
 
+LOCAL_DEBUG = False
+
 def get_photo_names():
     # we assume that GlobalVariables is already set
     return PhotoFileFinder().find_photos()
 
 class PhotoFileFinder:
-
-    LOCAL_DEBUG = False
 
     def __init__(self):
         pass
@@ -24,7 +24,7 @@ class PhotoFileFinder:
             if self.is_photo(photo):
                 photos.append(photo)
 
-        if self.LOCAL_DEBUG:
+        if LOCAL_DEBUG:
             self.__debug_print_all_photo_files_in_location(photos)
 
         return photos
