@@ -22,6 +22,9 @@ def image_data_from_image(image):
 
     its = ImageTextSearch(text)
 
+    if not its.is_photo:
+        return
+
     return its.analyze()
 
 #[Time, Location, Cost, Description]
@@ -41,52 +44,57 @@ class ImageTextSearch:
         "total_amount"
     ]
 
-
     def __init__(self, text):
         self.text = text
+        self.core_data = None
+        self.is_photo = self.is_photo_receipt()
+
+    # Public Facing
 
     def is_photo_receipt(self):
-        self.datetime = self.find_datetime()
-        self.address = self.find_address()
-        self.total_amount = self.find_total_amount()
-        self.description = self.description()
+        empty_core_data = dict.fromkeys(self.ANALYSIS_ATTRIBUTES, None)
+        self.core_data = self.populate_core_data(empty_core_data)
 
-        for attr in PROCESSED_ATTRIBUTES:
-            if not self._dict_[attr]:
+        for attr in self.ANALYSIS_ATTRIBUTES:
+            if (attr in self.PROCESSED_ATTRIBUTES) and (self.core_data[attr] is None):
                 return False
 
+        if LOCAL_DEBUG:
+            self._debug_all_set_attributes()
+
+        self.core_data = empty_core_data
         return True
 
-    def analyze(self):
-        empty_text = dict.fromkeys(self.ANALYSIS_ATTRIBUTES, None)
-
-        relevant_text = self._set_relevant_text_attributes(empty_text)
-
-        if LOCAL_DEBUG:
-            self._debug_text_and_relevant_text(relevant_text)
-            relevant_text.update(self._debug_append_original_text(relevant_text))
-
-        return ImageData(relevant_text)
-
-    def _set_relevant_text_attributes(attr_dict):
-        # this just sets all values in attr_dict by calling
-        # find_#{attr} on each one
-        # and returning the result
-        for attr in ANALYSIS_ATTRIBUTES:
-            attr_dict[attr] = getattr(
-                sys.modules[__name__],
-                "_find_%s" %(attr)
+    def populate_core_data(self, empty_core_data):
+        for attr in self.ANALYSIS_ATTRIBUTES:
+            find_function = getattr(
+                self,
+                self._define_finders(attr)
             )
+            value = find_function()
+            empty_core_data[attr] = find_function()
 
-        return attr_dict
+        return empty_core_data
+
+    def analyze(self):
+        if LOCAL_DEBUG:
+            self._debug_text_and_relevant_text(self.core_data)
+            self.core_data.update(self._debug_append_original_text(self.core_data))
+
+        return ImageData(self.core_data)
+
+    # Finders
+
+    def _define_finders(self, attr):
+        return "_find_%s" % (attr)
 
     def _find_date(self):
         date_regex = r'(\d+/\d+/\d+)'
         return self._search_singular_with_regex(date_regex)
 
-    def _find_datetime(self):
+    def _find_time(self):
         time_regex = r'(\d+:\d+:\d+)'
-        return = self._search_singular_with_regex(time_regex)
+        return self._search_singular_with_regex(time_regex)
 
     def _find_address(self):
         return None # TODO
@@ -103,6 +111,8 @@ class ImageTextSearch:
 
     def _find_description(self):
         return None # TODO
+
+    # Helpers
 
     def _max_amounts(self, money_list):
         max_amount = 0
@@ -144,6 +154,8 @@ class ImageTextSearch:
         else:
             return match.group()
 
+    # Debuggers
+
     def _debug_text_and_relevant_text(self, relevant_text):
         print "The original text was : %s" % (self.text)
         print "The relevant text was : %s" % (relevant_text)
@@ -152,3 +164,7 @@ class ImageTextSearch:
         return {
             "original text": self.text,
         }
+
+    def _debug_all_set_attributes(self):
+        for attr in ANALYSIS_ATTRIBUTES:
+            print "%s has value %s" % (attr, self.__dict__[attr])
