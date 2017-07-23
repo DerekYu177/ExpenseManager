@@ -3,6 +3,8 @@ import os
 from ..shared import GlobalVariables
 from ..shared import GlobalConstants
 
+LOCAL_DEBUG = False
+
 class DataFileHelper:
 
     def initialize_data_file(self):
@@ -12,7 +14,7 @@ class DataFileHelper:
         directory_exists = os.path.exists(directory)
         file_exists = os.path.exists(self.file_path)
 
-        if GlobalVariables.DEBUG:
+        if LOCAL_DEBUG:
             self.__debug_file_and_directory(directory_exists, file_exists)
 
         if not directory_exists:
@@ -21,7 +23,7 @@ class DataFileHelper:
         if not file_exists:
             open(GlobalConstants.PERSISTED_DATA_PATH, "w+").close()
 
-        if GlobalVariables.DEBUG:
+        if LOCAL_DEBUG:
             self.__debug_successful_file_and_directory_created()
 
     def clear_file(self):

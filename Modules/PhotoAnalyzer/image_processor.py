@@ -9,6 +9,9 @@ from ..image_data     import ImageData
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
+# module level debug
+LOCAL_DEBUG = False
+
 def image_data_from_image(image):
     image_location = GlobalVariables.IMAGE_LOCATION + "/" + image
 
@@ -34,7 +37,7 @@ class ImageTextSearch:
         relevant_text.update(self.find_total_amount())
         relevant_text.update(self.description())
 
-        if GlobalVariables.DEBUG:
+        if LOCAL_DEBUG:
             self.__debug_text_and_relevant_text(relevant_text)
             relevant_text.update(self.__debug_append_original_text(relevant_text))
 

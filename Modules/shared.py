@@ -7,8 +7,6 @@ class GlobalVariables:
 
     IMAGE_LOCATION = '%s/Test/Images' % (directory)
 
-    DEBUG = False
-
 class GlobalConstants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'
 
