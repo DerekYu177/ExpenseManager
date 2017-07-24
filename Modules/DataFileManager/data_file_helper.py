@@ -34,7 +34,7 @@ def does_file_exist():
     return os.path.isfile(GlobalConstants.PERSISTED_DATA_PATH)
 
 def is_file_populated():
-    return does_file_exist() or _file_size() > 0
+    return does_file_exist() and _file_size() > 0
 
 def is_file_empty():
     return _file_size() == 0

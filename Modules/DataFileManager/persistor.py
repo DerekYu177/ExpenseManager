@@ -2,41 +2,61 @@ import csv
 import os
 
 from ..shared import GlobalConstants
+import data_file_helper as DataFileHelper
 
 LOCAL_DEBUG = False
 
 class Persistor:
 
     def __init__(self):
-        # assume that the file exists
-        pass
+        if not DataFileHelper.does_file_exist():
+            DataFileHelper.initialize_data_file()
 
-    def persist_data(self, write_data):
-        data_file = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
+        self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+") # read/write
 
-        if LOCAL_DEBUG:
-            self.__debug_attempted_written_data(write_data)
+    def close(self):
+        self.f.close()
 
-        write_data_with_newline = write_data.as_csv_text() + "\n"
-        data_file.write(write_data_with_newline)
+    def append(self, write_data):
+        if self.f.closed: return self._tmp_append(write_data)
 
-        if LOCAL_DEBUG:
-            self.__debug_successful_written_data(write_data)
-
-        data_file.close()
+        if LOCAL_DEBUG: self.__debug_attempted_written_data(write_data)
+        self.f.write(self._with_newline(write_data.as_csv_text()))
+        if LOCAL_DEBUG: self.__debug_successful_written_data(write_data)
 
     def does_data_exist(self, new_data):
         identifier = new_data.identifier()
 
-        with open(GlobalConstants.PERSISTED_DATA_PATH, "r") as f: #read only
-            reader = csv.reader(f, delimiter=",")
-            for row in reader: # O(N) scability
-                if row[0] == identifier: # sort by time
-                    f.close()
-                    return True
+        if self.f.closed: return self._tmp_does_data_exist(new_data, identifier)
 
-            f.close()
-            return False
+        text = csv.reader(self.f, delimiter=",")
+        return self._find_by_identifier(text, identifier)
+
+    def _tmp_append(self, write_data):
+        f = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
+
+        if LOCAL_DEBUG: self.__debug_attempted_written_data(write_data)
+        f.write(self._with_newline(write_data.as_csv_text()))
+        if LOCAL_DEBUG: self.__debug_successful_written_data(write_data)
+        f.close()
+
+    def _tmp_does_data_exist(self, new_data, identifier):
+        f = open(GlobalConstants.PERSISTED_DATA_PATH, "r") #read only
+        text = csv.reader(f, delimiter=",")
+        text_found = self._find_by_identifier(text, identifier)
+        f.close()
+
+        return text_found
+
+    def _find_by_identifier(self, text, identifier):
+        for row in text:
+            if row[0] == identifier:
+                return True
+
+        return False
+
+    def _with_newline(self, write_data):
+        return write_data + "\n"
 
     def __debug_attempted_written_data(self, write_data):
         print "Data attempted to be written to file: %s" % (write_data)

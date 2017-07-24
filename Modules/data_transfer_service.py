@@ -16,8 +16,8 @@ def begin():
         image_data = image_processor.image_data_from_image(photo_name)
 
         if not p.does_data_exist(image_data):
-            p.persist_data(image_data)
+            p.append(image_data)
 
 def initialize_files():
     GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
-    file_helper.initialize_data_file()
+    data_file_helper.initialize_data_file()
