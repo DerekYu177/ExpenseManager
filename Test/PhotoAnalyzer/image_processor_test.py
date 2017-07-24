@@ -38,44 +38,33 @@ class TestMethods(unittest.TestCase):
             """
 
         its = image_processor.ImageTextSearch(text)
+        image_processor.LOCAL_DEBUG = True
 
-    def test_find_datetime(self):
-        expected = {
-            "date": "07/01/17",
-            "time": "20:48:14"
-        }
+    def test_find_date(self):
+        assert "07/01/17" == its._find_date()
 
-        assert expected == its.find_datetime()
+    def test_find_time(self):
+        assert "20:48:14" == its._find_time()
 
     def test_find_address(self):
-        expected = {
-            "address": "None"
-        }
-
-        assert expected == its.find_address()
+        assert None == its._find_address()
 
     def test_find_total_amount(self):
-        expected = {
-            "total_amount": "$2017.21"
-        }
-
-        assert expected == its.find_total_amount()
+        assert "$2017.21" == its._find_total_amount()
 
     def test_description(self):
-        expected = {
-            "description": "None"
-        }
-
-        assert expected == its.description()
+        assert None == its._find_description()
 
     def test_analyze(self):
         attrs = {
             "date": "07/01/17",
             "time": "20:48:14",
-            "address": "None",
+            "address": None,
             "total_amount": "$2017.21",
-            "description": "None"
+            "description": None,
         }
+
+        assert its.is_photo
 
         image_data = its.analyze()
 
@@ -85,3 +74,8 @@ class TestMethods(unittest.TestCase):
 
         for attr, attr_val in attrs.iteritems():
             assert(attr_val == image_data.__dict__[attr])
+
+    def test_is_photo_receipt(self):
+        its = image_processor.ImageTextSearch("text")
+
+        assert its.is_photo == False

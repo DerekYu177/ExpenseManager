@@ -1,10 +1,11 @@
 from PIL import Image as img
 import pytesseract
 import re
+import sys
 
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
-from ..image_data     import ImageData
+from ..image_data     import ImageData, Core
 
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
@@ -21,6 +22,9 @@ def image_data_from_image(image):
 
     its = ImageTextSearch(text)
 
+    if not its.is_photo:
+        return
+
     return its.analyze()
 
 #[Time, Location, Cost, Description]
@@ -29,82 +33,99 @@ class ImageTextSearch:
 
     def __init__(self, text):
         self.text = text
+        self.core_data = None
+        self.is_photo = self.is_photo_receipt()
 
-    def analyze(self):
-        relevant_text = {}
-        relevant_text.update(self.find_datetime())
-        relevant_text.update(self.find_address())
-        relevant_text.update(self.find_total_amount())
-        relevant_text.update(self.description())
+    # Public Facing
+
+    def is_photo_receipt(self):
+        empty_core_data = dict.fromkeys(Core.ANALYSIS_ATTRIBUTES, None)
+        self.core_data = self.populate_core_data(empty_core_data)
+
+        for attr in Core.ANALYSIS_ATTRIBUTES:
+            if (attr in Core.PROCESSED_ATTRIBUTES) and (self.core_data[attr] is None):
+                return False
 
         if LOCAL_DEBUG:
-            self.__debug_text_and_relevant_text(relevant_text)
-            relevant_text.update(self.__debug_append_original_text(relevant_text))
+            self._debug_all_set_attributes()
 
-        return ImageData(relevant_text)
+        self.core_data = empty_core_data
+        return True
 
-    def find_datetime(self):
+    def populate_core_data(self, empty_core_data):
+        for attr in Core.ANALYSIS_ATTRIBUTES:
+            find_function = getattr(
+                self,
+                self._define_finders(attr)
+            )
+            value = find_function()
+            empty_core_data[attr] = find_function()
+
+        return empty_core_data
+
+    def analyze(self):
+        if LOCAL_DEBUG:
+            self._debug_text_and_relevant_text(self.core_data)
+            self.core_data.update(self._debug_append_original_text(self.core_data))
+
+        return ImageData(self.core_data)
+
+    # Finders
+
+    def _define_finders(self, attr):
+        return "_find_%s" % (attr)
+
+    def _find_date(self):
         date_regex = r'(\d+/\d+/\d+)'
+        return self._search_singular_with_regex(date_regex)
+
+    def _find_time(self):
         time_regex = r'(\d+:\d+:\d+)'
+        return self._search_singular_with_regex(time_regex)
 
-        date = self.__search_singular_with_regex(date_regex)
-        time = self.__search_singular_with_regex(time_regex)
+    def _find_address(self):
+        return None # TODO
 
-        date_time = {
-            "date": date,
-            "time": time
-        }
-
-        return date_time
-
-    def find_address(self):
-        address = {
-            "address": "None" #TODO
-        }
-
-        return address
-
-    def find_total_amount(self):
+    def _find_total_amount(self):
         money_regex = r'[$]\s*\d+\.\d{2}'
 
         amounts = re.findall(money_regex, self.text)
-        amount = self.__max_amounts(amounts)
 
-        total_amount = {
-            "total_amount": amount,
-        }
+        if not amounts:
+            return None
 
-        return total_amount
+        return self._max_amounts(amounts)
 
-    def description(self):
-        description = {
-            "description": "None" #TODO
-        }
-        return description
+    def _find_description(self):
+        return None # TODO
 
-    def __max_amounts(self, money_list):
+    # Helpers
+
+    def _max_amounts(self, money_list):
         max_amount = 0
 
         for money in money_list:
-            m = self.__strip_dollar_sign(money)
+            m = self._strip_dollar_sign(money)
 
             if m > max_amount:
                 max_amount = m
 
-        return self.__add_dollar_sign(max_amount)
+        return self._add_dollar_sign(max_amount)
 
-    def __strip_dollar_sign(self, money):
-        if money[0] == "$":
-            return float(money[1:])
+    def _strip_dollar_sign(self, money):
+        if money[0] != "$":
+            return
 
-    def __add_dollar_sign(self, number):
+        return float(money[1:])
+
+    def _add_dollar_sign(self, number):
         number = str(number)
 
-        number = self.__add_lost_zero(number)
+        number = self._add_lost_zero(number)
 
         return "$" + number
 
-    def __add_lost_zero(self, number):
+    def _add_lost_zero(self, number):
         dollar, cents = number.split('.')
 
         if len(cents) == 0:
@@ -114,7 +135,7 @@ class ImageTextSearch:
         else:
             return number
 
-    def __search_singular_with_regex(self, regex):
+    def _search_singular_with_regex(self, regex):
         match = re.search(regex, self.text)
 
         if match is None:
@@ -122,11 +143,17 @@ class ImageTextSearch:
         else:
             return match.group()
 
-    def __debug_text_and_relevant_text(self, relevant_text):
+    # Debuggers
+
+    def _debug_text_and_relevant_text(self, relevant_text):
         print "The original text was : %s" % (self.text)
         print "The relevant text was : %s" % (relevant_text)
 
-    def __debug_append_original_text(self, relevant):
+    def _debug_append_original_text(self, relevant):
         return {
             "original text": self.text,
         }
+
+    def _debug_all_set_attributes(self):
+        for attr in Core.ANALYSIS_ATTRIBUTES:
+            print "%s has value %s" % (attr, self.__dict__[attr])
