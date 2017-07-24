@@ -1,7 +1,7 @@
 import unittest
 import pytest
 
-from ...Modules.FileManager.photo_file_finder import PhotoFileFinder
+from ...Modules.DataFileManager.photo_file_finder import PhotoFileFinder
 from ...Modules.shared import GlobalVariables
 
 class TestMethods(unittest.TestCase):
