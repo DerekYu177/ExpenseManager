@@ -1,16 +1,16 @@
-import unittest, pytest, os
-from ...Modules.DataManager.persistor import Persistor
+import unittest, pytest
+import os
+from ...Modules.DataFileManager.persistor import Persistor
 
 from ...Modules import shared
 from ...Modules.image_data import ImageData
-from ...Modules.FileManager.data_file_helper import DataFileHelper
+from ...Modules.DataFileManager import data_file_helper as DataFileHelper
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
         global id1, id2, p, dfh
 
-        dfh = DataFileHelper()
-        dfh.initialize_data_file()
+        DataFileHelper.initialize_data_file()
 
         p = Persistor()
 

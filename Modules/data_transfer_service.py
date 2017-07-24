@@ -1,5 +1,4 @@
-from DataManager import persistor
-from FileManager import data_file_helper, photo_file_finder
+from DataFileManager import data_file_helper, photo_file_finder, persistor
 from PhotoAnalyzer import image_processor
 from UI import user_interface
 
@@ -21,6 +20,4 @@ def begin():
 
 def initialize_files():
     GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
-
-    file_helper = data_file_helper.DataFileHelper()
     file_helper.initialize_data_file()
