@@ -5,7 +5,7 @@ import sys
 
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
-from ..image_data     import ImageData
+from ..image_data     import ImageData, Core
 
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
@@ -30,19 +30,6 @@ def image_data_from_image(image):
 #[Time, Location, Cost, Description]
 
 class ImageTextSearch:
-    ANALYSIS_ATTRIBUTES = [
-        "date",
-        "time",
-        "address",
-        "total_amount",
-        "description"
-    ]
-
-    PROCESSED_ATTRIBUTES = [
-        "date",
-        "time",
-        "total_amount"
-    ]
 
     def __init__(self, text):
         self.text = text
@@ -52,11 +39,11 @@ class ImageTextSearch:
     # Public Facing
 
     def is_photo_receipt(self):
-        empty_core_data = dict.fromkeys(self.ANALYSIS_ATTRIBUTES, None)
+        empty_core_data = dict.fromkeys(Core.ANALYSIS_ATTRIBUTES, None)
         self.core_data = self.populate_core_data(empty_core_data)
 
-        for attr in self.ANALYSIS_ATTRIBUTES:
-            if (attr in self.PROCESSED_ATTRIBUTES) and (self.core_data[attr] is None):
+        for attr in Core.ANALYSIS_ATTRIBUTES:
+            if (attr in Core.PROCESSED_ATTRIBUTES) and (self.core_data[attr] is None):
                 return False
 
         if LOCAL_DEBUG:
@@ -66,7 +53,7 @@ class ImageTextSearch:
         return True
 
     def populate_core_data(self, empty_core_data):
-        for attr in self.ANALYSIS_ATTRIBUTES:
+        for attr in Core.ANALYSIS_ATTRIBUTES:
             find_function = getattr(
                 self,
                 self._define_finders(attr)
@@ -126,8 +113,10 @@ class ImageTextSearch:
         return self._add_dollar_sign(max_amount)
 
     def _strip_dollar_sign(self, money):
-        if money[0] == "$":
-            return float(money[1:])
+        if money[0] != "$":
+            return
+
+        return float(money[1:])
 
     def _add_dollar_sign(self, number):
         number = str(number)
@@ -166,5 +155,5 @@ class ImageTextSearch:
         }
 
     def _debug_all_set_attributes(self):
-        for attr in ANALYSIS_ATTRIBUTES:
+        for attr in Core.ANALYSIS_ATTRIBUTES:
             print "%s has value %s" % (attr, self.__dict__[attr])
