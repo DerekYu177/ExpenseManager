@@ -8,7 +8,7 @@ from ...Modules.DataFileManager import data_file_helper as DataFileHelper
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
-        global id1, id2, p, dfh
+        global id1, id2, p
 
         DataFileHelper.initialize_data_file()
 
@@ -30,9 +30,9 @@ class TestMethods(unittest.TestCase):
             "description": "test data"
         })
 
-    # we need to teardown after every method
     def teardown_method(self, method):
-        dfh.clear_file()
+        DataFileHelper.clear_file()
+        DataFileHelper.del_file()
         shared.GlobalVariables.DEBUG = False
 
 

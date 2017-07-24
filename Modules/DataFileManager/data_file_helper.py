@@ -27,6 +27,9 @@ def initialize_data_file():
 def clear_file():
     open(GlobalConstants.PERSISTED_DATA_PATH, 'w').close()
 
+def del_file():
+    os.remove(GlobalConstants.PERSISTED_DATA_PATH)
+
 def does_file_exist():
     return os.path.isfile(GlobalConstants.PERSISTED_DATA_PATH)
 
