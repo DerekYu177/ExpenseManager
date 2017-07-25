@@ -3,7 +3,7 @@ from PhotoAnalyzer import image_processor
 from UI import user_interface
 
 from shared import *
-from image_data import *
+from image_data import ImageData
 
 def begin():
     initialize_files()
@@ -15,8 +15,9 @@ def begin():
     for photo_name in photos_names:
         image_data = image_processor.image_data_from_image(photo_name)
 
-        if not p.does_data_exist(image_data):
+        if image_data is not None:
             p.append(image_data)
+
 
 def initialize_files():
     GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()

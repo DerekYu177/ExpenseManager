@@ -23,7 +23,7 @@ def image_data_from_image(image):
     its = ImageTextSearch(text)
 
     if not its.is_photo:
-        return
+        return None
 
     return its.analyze()
 
