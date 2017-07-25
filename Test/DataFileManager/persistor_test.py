@@ -33,15 +33,11 @@ class TestMethods(unittest.TestCase):
     def teardown_method(self, method):
         DataFileHelper.clear_file()
         DataFileHelper.del_file()
-        shared.GlobalVariables.DEBUG = False
-
 
     def test_persist_data(self):
-
-        shared.GlobalVariables.DEBUG = True
-
-        p.persist_data(id1)
-        p.persist_data(id2)
+        p.append(id1)
+        p.append(id2)
+        p.close()
 
         f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
         contents = f.read()
@@ -52,7 +48,8 @@ class TestMethods(unittest.TestCase):
         assert contents == expected
 
     def test_does_data_exist(self):
-        p.persist_data(id1)
-        p.persist_data(id2)
+        p.append(id1)
+        p.append(id2)
+        p.close()
 
-        assert p.does_data_exist(id2) == True
+        assert p.does_data_exist(id2)

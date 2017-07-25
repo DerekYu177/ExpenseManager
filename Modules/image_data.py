@@ -60,6 +60,7 @@ class ImageData:
         return "%s-%s" % (date, time)
 
     def _shorten_address(self):
+        if self.address is None: return self.address
         if len(self.address) < self.MAX_ADDRESS_LENGTH: return self.address
 
         address = self.address[:self.MAX_ADDRESS_LENGTH-3]
