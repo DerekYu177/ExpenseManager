@@ -2,8 +2,9 @@ import os
 
 from ..shared import GlobalVariables
 from ..shared import GlobalConstants
+from ..debug import DataFileHelper as debug
 
-LOCAL_DEBUG = False
+debug = debug()
 
 def initialize_data_file():
     file_path = GlobalConstants.PERSISTED_DATA_PATH
@@ -12,8 +13,8 @@ def initialize_data_file():
     directory_exists = os.path.exists(directory)
     file_exists = os.path.exists(file_path)
 
-    if LOCAL_DEBUG:
-        _debug_file_and_directory(directory_exists, file_exists)
+    if debug.LOCAL_DEBUG:
+        debug.file_and_directory(file_path, directory_exists, file_exists)
 
     if not directory_exists:
         os.makedirs(directory)
@@ -21,8 +22,8 @@ def initialize_data_file():
     if not file_exists:
         open(GlobalConstants.PERSISTED_DATA_PATH, "w+").close()
 
-    if LOCAL_DEBUG:
-        _debug_successful_file_and_directory_created()
+    if debug.LOCAL_DEBUG:
+        debug.successful_file_and_directory_created(file_path)
 
 def clear_file():
     open(GlobalConstants.PERSISTED_DATA_PATH, 'w').close()
@@ -41,11 +42,3 @@ def is_file_empty():
 
 def _file_size():
     return os.stat(GlobalConstants.PERSISTED_DATA_PATH).st_size
-
-def _debug_file_and_directory(directory_exists, file_exists):
-    print "file path: %s" % (file_path)
-    print "does directory exist: %s" % (directory_exists)
-    print "does file exist: %s" % (file_exists)
-
-def _debug_successful_file_and_directory_created():
-    print "file/dir successfully at %s" % (file_path)

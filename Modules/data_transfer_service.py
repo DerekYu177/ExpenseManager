@@ -5,7 +5,11 @@ from UI import user_interface
 from shared import *
 from image_data import ImageData
 
+import debug
+
 def begin():
+    debug.set_debug(True)
+
     initialize_files()
 
     p = persistor.Persistor()
@@ -20,5 +24,9 @@ def begin():
 
 
 def initialize_files():
-    GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
+    if debug.GLOBAL_DEBUG:
+        GlobalVariables.RECEIPT_LOCATION = user_interface.prompt_user_for_location()
+    else:
+        GlobalVariables.RECEIPT_LOCATION = GlobalVariables.IMAGE_LOCATION
+
     data_file_helper.initialize_data_file()

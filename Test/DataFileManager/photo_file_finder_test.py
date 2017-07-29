@@ -10,16 +10,17 @@ class TestMethods(unittest.TestCase):
         global pf
         pf = PhotoFileFinder()
 
-    def test_print_list_to_string(self):
-        test_list = ["a", "b", "c", "d"]
-        actual = pf.print_list_to_string(test_list)
-        expected = "a\nb\nc\nd\n"
-
-        assert actual == expected
-
-    def test_print_list_to_string_when_list_not_list(self):
-        test_list = "/Shared/DerekYu177"
-        assert pf.print_list_to_string(test_list) == test_list
+    # TODO: add this to a list of debug specific tests!
+    # def test_print_list_to_string(self):
+    #     test_list = ["a", "b", "c", "d"]
+    #     actual = pf.print_list_to_string(test_list)
+    #     expected = "a\nb\nc\nd\n"
+    #
+    #     assert actual == expected
+    #
+    # def test_print_list_to_string_when_list_not_list(self):
+    #     test_list = "/Shared/DerekYu177"
+    #     assert pf.print_list_to_string(test_list) == test_list
 
     def test_find_photos_when_glb_var_not_instantiated_raises_error(self):
         GlobalVariables.RECEIPT_LOCATION = ""
