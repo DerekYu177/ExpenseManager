@@ -22,12 +22,10 @@ def image_data_from_image(image):
 
     its = ImageTextSearch(text)
 
-    if not its.is_photo:
-        return None
+    if its.is_photo:
+        return its.analyze()
 
-    return its.analyze()
-
-#[Time, Location, Cost, Description]
+    return None
 
 class ImageTextSearch:
 
@@ -49,7 +47,6 @@ class ImageTextSearch:
         if debug.LOCAL_DEBUG:
             debug.all_set_attributes(self)
 
-        self.core_data = empty_core_data
         return True
 
     def populate_core_data(self, empty_core_data):
