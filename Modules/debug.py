@@ -3,7 +3,7 @@ from shared import GlobalConstants
 from shared import ImageDataCore
 
 class DebugCore:
-    GLOBAL_DEBUG = False
+    GLOBAL_DEBUG.off()
     DEBUG_COUNTER = 0
     MAX_MESSAGE_LENGTH = 100
     VERBOSE = True
