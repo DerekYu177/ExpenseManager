@@ -6,12 +6,13 @@ import sys
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
 from ..image_data     import ImageData, Core
+from ..debug          import ImageTextSearch as debug
 
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
-# module level debug
-LOCAL_DEBUG = False
+# open the debug class
+debug = debug()
 
 def image_data_from_image(image):
     image_location = GlobalVariables.IMAGE_LOCATION + "/" + image
@@ -22,17 +23,15 @@ def image_data_from_image(image):
 
     its = ImageTextSearch(text)
 
-    if not its.is_photo:
-        return None
+    if its.is_photo:
+        return its.analyze()
 
-    return its.analyze()
-
-#[Time, Location, Cost, Description]
+    return None
 
 class ImageTextSearch:
 
-    def __init__(self, text):
-        self.text = text
+    def __init__(self, original_text):
+        self.original_text = original_text
         self.core_data = None
         self.is_photo = self.is_photo_receipt()
 
@@ -46,10 +45,9 @@ class ImageTextSearch:
             if (attr in Core.PROCESSED_ATTRIBUTES) and (self.core_data[attr] is None):
                 return False
 
-        if LOCAL_DEBUG:
-            self._debug_all_set_attributes()
+        if debug.LOCAL_DEBUG:
+            debug.all_set_attributes(self)
 
-        self.core_data = empty_core_data
         return True
 
     def populate_core_data(self, empty_core_data):
@@ -59,14 +57,18 @@ class ImageTextSearch:
                 self._define_finders(attr)
             )
             value = find_function()
-            empty_core_data[attr] = find_function()
+
+            if debug.LOCAL_DEBUG:
+                debug.show_set_attributes(attr, value)
+
+            empty_core_data[attr] = value
 
         return empty_core_data
 
     def analyze(self):
-        if LOCAL_DEBUG:
-            self._debug_text_and_relevant_text(self.core_data)
-            self.core_data.update(self._debug_append_original_text(self.core_data))
+        if debug.LOCAL_DEBUG:
+            debug.text_and_relevant_text(self.original_text, self.core_data)
+            self.core_data.update(debug.append_original_text(self.core_data))
 
         return ImageData(self.core_data)
 
@@ -77,23 +79,18 @@ class ImageTextSearch:
 
     def _find_date(self):
         date_regex = r'(\d+/\d+/\d+)'
-        return self._search_singular_with_regex(date_regex)
+        return self._search(date_regex)
 
     def _find_time(self):
         time_regex = r'(\d+:\d+:\d+)'
-        return self._search_singular_with_regex(time_regex)
+        return self._search(time_regex)
 
     def _find_address(self):
         return None # TODO
 
     def _find_total_amount(self):
         money_regex = r'[$]\s*\d+\.\d{2}'
-
-        amounts = re.findall(money_regex, self.text)
-
-        if not amounts:
-            return None
-
+        amounts = self._search(money_regex)
         return self._max_amounts(amounts)
 
     def _find_description(self):
@@ -102,6 +99,16 @@ class ImageTextSearch:
     # Helpers
 
     def _max_amounts(self, money_list):
+        if money_list is None:
+            return money_list
+
+        if type(money_list) is str:
+            return money_list
+
+        if type(money_list) is list:
+            return self._max_list_finder(money_list)
+
+    def _max_list_finder(self, money_list):
         max_amount = 0
 
         for money in money_list:
@@ -135,25 +142,13 @@ class ImageTextSearch:
         else:
             return number
 
-    def _search_singular_with_regex(self, regex):
-        match = re.search(regex, self.text)
+    def _search(self, regex):
+        match = re.findall(regex, self.original_text)
 
-        if match is None:
+        if not match:
             return None
-        else:
-            return match.group()
 
-    # Debuggers
+        if len(match) == 1:
+            return match[0]
 
-    def _debug_text_and_relevant_text(self, relevant_text):
-        print "The original text was : %s" % (self.text)
-        print "The relevant text was : %s" % (relevant_text)
-
-    def _debug_append_original_text(self, relevant):
-        return {
-            "original text": self.text,
-        }
-
-    def _debug_all_set_attributes(self):
-        for attr in Core.ANALYSIS_ATTRIBUTES:
-            print "%s has value %s" % (attr, self.__dict__[attr])
+        return match

@@ -3,8 +3,9 @@ import os
 
 from ..shared import GlobalConstants
 import data_file_helper as DataFileHelper
+from ..debug import Persistor as debug
 
-LOCAL_DEBUG = False
+debug = debug()
 
 class Persistor:
 
@@ -19,7 +20,8 @@ class Persistor:
         self.f.close()
 
     def append(self, write_data):
-        if self.f.closed: return self._tmp_append(write_data)
+        if self.f.closed:
+            return self._tmp_append(write_data)
 
         if not self.first_write:
             if self.does_data_exist(write_data):
@@ -31,7 +33,8 @@ class Persistor:
     def does_data_exist(self, new_data):
         identifier = new_data.identifier()
 
-        if self.f.closed: return self._tmp_does_data_exist(new_data, identifier)
+        if self.f.closed:
+            return self._tmp_does_data_exist(new_data, identifier)
 
         text = csv.reader(self.f, delimiter=",")
         return self._find_by_identifier(text, identifier)
@@ -61,7 +64,8 @@ class Persistor:
         return write_data + "\n"
 
     def _write_with_debug(self, write_data, f=None):
-        if LOCAL_DEBUG: self._debug_attempted_written_data(write_data)
+        if debug.LOCAL_DEBUG:
+            debug.attempted_written_data(write_data)
 
         ready_data = self._with_newline(write_data.as_csv_text())
         if f is not None:
@@ -69,10 +73,5 @@ class Persistor:
         else:
             self.f.write(ready_data)
 
-        if LOCAL_DEBUG: self._debug_successful_written_data(write_data)
-
-    def _debug_attempted_written_data(self, write_data):
-        print "Data attempted to be written to file: %s" % (write_data)
-
-    def _debug_successful_written_data(self, write_data):
-        print "Data successfully written to file   : %s" % (write_data)
+        if debug.LOCAL_DEBUG:
+            debug.successful_written_data(write_data)

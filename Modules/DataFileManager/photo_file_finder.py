@@ -3,8 +3,9 @@ from os.path    import isfile
 import re
 
 from ..shared   import GlobalVariables
+from ..debug    import PhotoFileFinder as debug
 
-LOCAL_DEBUG = False
+debug = debug()
 
 def get_photo_names():
     # we assume that GlobalVariables is already set
@@ -24,8 +25,8 @@ class PhotoFileFinder:
             if self.is_photo(photo):
                 photos.append(photo)
 
-        if LOCAL_DEBUG:
-            self.__debug_print_all_photo_files_in_location(photos)
+        if debug.LOCAL_DEBUG:
+            debug.print_all_photo_files_in_location(photos)
 
         return photos
 
@@ -44,19 +45,3 @@ class PhotoFileFinder:
                 return True
 
         return False
-
-    def print_list_to_string(self, item_list):
-        string = ""
-
-        if type(item_list) is list:
-            for item in item_list:
-                string = string + item + "\n"
-        else:
-            string = item_list
-
-        return string
-
-    def __debug_print_all_photo_files_in_location(self, observed_photos):
-        print "All the photo files located in the receipt location %s are %s" % (
-         GlobalVariables.RECEIPT_LOCATION, self.print_list_to_string(observed_photos)
-        )
