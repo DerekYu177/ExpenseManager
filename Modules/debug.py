@@ -26,6 +26,7 @@ def show_sys_path():
 def debug_print(text):
     text = text_truncate(text)
     print "%s: %s" % (DebugCore.DEBUG_COUNTER, text)
+    # add condition where there is a new line involved
     DebugCore.DEBUG_COUNTER = DebugCore.DEBUG_COUNTER + 1
 
 def text_truncate(text):

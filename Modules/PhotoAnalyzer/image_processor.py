@@ -11,6 +11,7 @@ from ..debug          import ImageTextSearch as debug
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
 
+# open the debug class
 debug = debug()
 
 def image_data_from_image(image):
@@ -78,23 +79,18 @@ class ImageTextSearch:
 
     def _find_date(self):
         date_regex = r'(\d+/\d+/\d+)'
-        return self._search_singular_with_regex(date_regex)
+        return self._search(date_regex)
 
     def _find_time(self):
         time_regex = r'(\d+:\d+:\d+)'
-        return self._search_singular_with_regex(time_regex)
+        return self._search(time_regex)
 
     def _find_address(self):
         return None # TODO
 
     def _find_total_amount(self):
         money_regex = r'[$]\s*\d+\.\d{2}'
-
-        amounts = re.findall(money_regex, self.original_text)
-
-        if not amounts:
-            return None
-
+        amounts = self._search(money_regex)
         return self._max_amounts(amounts)
 
     def _find_description(self):
@@ -103,6 +99,16 @@ class ImageTextSearch:
     # Helpers
 
     def _max_amounts(self, money_list):
+        if money_list is None:
+            return money_list
+
+        if type(money_list) is str:
+            return money_list
+
+        if type(money_list) is list:
+            return self._max_list_finder(money_list)
+
+    def _max_list_finder(self, money_list):
         max_amount = 0
 
         for money in money_list:
@@ -136,10 +142,13 @@ class ImageTextSearch:
         else:
             return number
 
-    def _search_singular_with_regex(self, regex):
-        match = re.search(regex, self.original_text)
+    def _search(self, regex):
+        match = re.findall(regex, self.original_text)
 
-        if match is None:
+        if not match:
             return None
-        else:
-            return match.group()
+
+        if len(match) == 1:
+            return match[0]
+
+        return match
