@@ -2,12 +2,8 @@ from shared import GlobalVariables
 from shared import GlobalConstants
 from shared import ImageDataCore
 
-class DebugCore:
-    GLOBAL_DEBUG.off()
-    DEBUG_COUNTER = 0
-    MAX_MESSAGE_LENGTH = 100
-    VERBOSE = True
-    NEWLINE = "\n"
+def begin():
+    ErrorStateController.new()
 
 def set_debug(debug_flag=False):
     debug_print("Set GLOBAL_DEBUG: %s" % debug_flag)
