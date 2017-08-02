@@ -47,16 +47,16 @@ def text_tab(text, tab):
     return space_number * space + text
 
 def list_to_string(item_in_list, current_indentation=0):
-    statement = ""
+    statement = DebugCore.NEWLINE
     for item in item_in_list:
         statement = statement + text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
     return statement
 
 def dict_to_string(dictionary, current_indentation=0):
-    statement = ""
-    for key, value in enumerable(dictionary):
+    statement = DebugCore.NEWLINE
+    for key, value in dictionary.items():
         item = "%s:%s" % (key, value)
-        statement = statement + (item, current_indentation + 1) + DebugCore.NEWLINE
+        statement = statement + text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
     return statement
 
 def print_debug_with_state(statement, ErrorState):
@@ -127,6 +127,19 @@ class ImageTextSearch:
             message = "Get %s: %s" % (attr, obj.__dict__[attr])
             statement = statement + text_tab(message, 1)
 
+        debug_print(statement)
+
+    def show_full_data(self, filled_data):
+        statement = dict_to_string(filled_data)
+        debug_print(statement)
+
+class ImageData:
+
+    def __init__(self):
+        pass
+
+    def show_csv_text(self, joined_text):
+        statement = "Data:" + joined_text
         debug_print(statement)
 
 class ErrorState:

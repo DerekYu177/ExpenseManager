@@ -11,7 +11,7 @@ def begin():
     debug.set_debug(True)
     initialize_files()
 
-    p = persistor.Persistor()
+    p = persistor.Persistor(False)
 
     photos_names = photo_file_finder.get_photo_names()
 

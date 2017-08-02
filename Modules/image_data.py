@@ -13,7 +13,6 @@ class Core:
         "total_amount"
     ]
 
-
 class ImageData:
     MAX_ADDRESS_LENGTH = 10
     LOCAL_DEBUG = False
@@ -44,7 +43,9 @@ class ImageData:
 
         self._normalize_none()
 
-        return ",".join(self.attr_list)
+        text = ",".join(self.attr_list)
+        debug.show_csv_text(text)
+        return
 
     def identifier(self):
         return self._date_time()

@@ -63,6 +63,8 @@ class ImageTextSearch:
 
             empty_core_data[attr] = value
 
+        if debug.LOCAL_DEBUG:
+            debug.show_full_data(empty_core_data)
         return empty_core_data
 
     def analyze(self):
