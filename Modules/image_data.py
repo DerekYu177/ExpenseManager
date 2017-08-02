@@ -34,21 +34,23 @@ class ImageData:
             self._debug_print_attributes()
 
     def as_csv_text(self):
+        self._set_text
+        self._normalize_none()
+
+        text = ",".join(self.attr_list)
+        debug.show_csv_text(text)
+        return text
+
+    def identifier(self):
+        return self._date_time()
+
+    def _set_text(self):
         self.attr_list = [
             self._date_time(),
             self._shorten_address(),
             self.total_amount,
             self.description
         ]
-
-        self._normalize_none()
-
-        text = ",".join(self.attr_list)
-        debug.show_csv_text(text)
-        return
-
-    def identifier(self):
-        return self._date_time()
 
     def _assign_instance_variables(self):
         for attr in Core.ANALYSIS_ATTRIBUTES:

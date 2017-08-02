@@ -6,7 +6,7 @@ import sys
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
 from ..image_data     import ImageData, Core
-from ..debug          import ImageTextSearch as debug
+from ..debug          import ImageProcessor as debug
 
 # set the path to the tesseract package
 pytesseract.pytesseract.tesseract_cmd = GlobalConstants.PYTESSERACT_LOCATION
@@ -16,6 +16,9 @@ debug = debug()
 
 def image_data_from_image(image):
     image_location = GlobalVariables.IMAGE_LOCATION + "/" + image
+
+    if debug.LOCAL_DEBUG:
+        debug.show_image_name(image_location)
 
     text = pytesseract.image_to_string(
         img.open(image_location)

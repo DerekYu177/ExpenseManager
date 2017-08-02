@@ -19,6 +19,7 @@ def begin():
         image_data = image_processor.image_data_from_image(photo_name)
 
         if image_data is not None:
+            print "Not None"
             p.append(image_data)
 
 def initialize_files():
@@ -26,7 +27,7 @@ def initialize_files():
     data_file_helper.initialize_data_file()
 
 def image_file_when_debugging():
-    # TODO: What is going on here??
+    # TODO: Unable to update and use GlobalVariables.DEBUG
 
     return GlobalVariables.IMAGE_LOCATION
     #return user_interface.prompt_user_for_location()
