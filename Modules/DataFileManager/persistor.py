@@ -2,50 +2,75 @@ import csv
 import os
 
 from ..shared import GlobalConstants
+from ..shared import GlobalVariables
 import data_file_helper as DataFileHelper
 from ..debug import Persistor as debug
 
 debug = debug()
 
 class Persistor:
+    NEWLINE = "\n"
 
-    def __init__(self):
+    def __init__(self, p_state):
         if not DataFileHelper.does_file_exist():
             DataFileHelper.initialize_data_file()
 
-        self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+") # read/write
-        self.first_write = True
+        # TODO: Use states to fix this
+        # True = 'active' = leave f open for all operations
+        # False = 'disabled' = require f to be opened for any operation
+        self.p_state = p_state
+        self._prepare_data_file()
 
     def close(self):
         self.f.close()
 
     def append(self, write_data):
-        if self.f.closed:
-            return self._tmp_append(write_data)
+        if self.p_state:
+            self._persisted_append(write_data)
+        else:
+            self._temporary_append(write_data)
 
-        if not self.first_write:
-            if self.does_data_exist(write_data):
-                return
+    def query(self, write_data):
+        if self.p_state:
+            self._persisted_query(write_data)
+        else:
+            self._temporary_query(write_data)
 
-        self._write_with_debug(write_data)
-        self.first_write = False
+    def turn(self, new_internal_state):
+        if not self.p_state and new_internal_state:
+            self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
+        elif self.p_state and not new_internal_state:
+            self.close()
+        else:
+            pass
 
-    def does_data_exist(self, new_data):
+    # private
+
+    def _prepare_data_file(self):
+        if self.p_state:
+            self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
+        else:
+            self.f = None
+
+    def _persisted_append(self, write_data):
+        if DataFileHelper.is_file_empty():
+            self._write_with_debug(write_data)
+        elif not _persisted_query(write_data):
+            self._write_with_debug(write_data)
+        else:
+            return
+
+    def _persisted_query(self, new_data):
         identifier = new_data.identifier()
-
-        if self.f.closed:
-            return self._tmp_does_data_exist(new_data, identifier)
-
         text = csv.reader(self.f, delimiter=",")
         return self._find_by_identifier(text, identifier)
 
-    def _tmp_append(self, write_data):
+    def _temporary_append(self, write_data):
         f = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
-
         self._write_with_debug(write_data, f)
         f.close()
 
-    def _tmp_does_data_exist(self, new_data, identifier):
+    def _temporary_query(self, new_data, identifier):
         f = open(GlobalConstants.PERSISTED_DATA_PATH, "r") #read only
         text = csv.reader(f, delimiter=",")
         text_found = self._find_by_identifier(text, identifier)
@@ -60,14 +85,11 @@ class Persistor:
 
         return False
 
-    def _with_newline(self, write_data):
-        return write_data + "\n"
-
     def _write_with_debug(self, write_data, f=None):
         if debug.LOCAL_DEBUG:
             debug.attempted_written_data(write_data)
 
-        ready_data = self._with_newline(write_data.as_csv_text())
+        ready_data = write_data.as_csv_text() + NEWLINE
         if f is not None:
             f.write(ready_data)
         else:

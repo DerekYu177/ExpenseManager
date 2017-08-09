@@ -16,7 +16,7 @@ def set_debug(debug_flag=False):
     DataFileHelper.LOCAL_DEBUG = debug_flag
     Persistor.LOCAL_DEBUG = debug_flag
     PhotoFileFinder.LOCAL_DEBUG = debug_flag
-    ImageTextSearch.LOCAL_DEBUG = debug_flag
+    ImageProcessor.LOCAL_DEBUG = debug_flag
 
 def show_sys_path():
     import sys
@@ -38,8 +38,7 @@ def text_truncate(text):
     return text
 
 def text_truncate_access_location(location):
-    # TODO
-    return location
+    return location # TODO
 
 def text_tab(text, tab):
     space_number = tab * 2
@@ -47,21 +46,29 @@ def text_tab(text, tab):
     return space_number * space + text
 
 def list_to_string(item_in_list, current_indentation=0):
-    statement = ""
+    statement = DebugCore.NEWLINE
     for item in item_in_list:
         statement = statement + text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
     return statement
 
 def dict_to_string(dictionary, current_indentation=0):
-    statement = ""
-    for key, value in enumerable(dictionary):
+    statement = DebugCore.NEWLINE
+    for key, value in dictionary.items():
         item = "%s:%s" % (key, value)
-        statement = statement + (item, current_indentation + 1) + DebugCore.NEWLINE
+        statement = statement + text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
     return statement
 
 def print_debug_with_state(statement, ErrorState):
-    # TODO
+    # TODO: When states are enabled
     pass
+
+class Service: #TODO
+
+    def __init__(self):
+        pass
+
+    def show_image_data(self, image_data):
+        pass
 
 class DataFileHelper:
     LOCAL_DEBUG = False
@@ -101,11 +108,15 @@ class PhotoFileFinder:
         statement = statement + list_to_string(observed_photos, 0) + DebugCore.NEWLINE
         debug_print(statement)
 
-class ImageTextSearch:
+class ImageProcessor:
     LOCAL_DEBUG = False
 
     def __init__(self):
         pass
+
+    def show_image_name(self, image_location):
+        statement = "The current photo is:" + image_location
+        debug_print(statement)
 
     def show_set_attributes(self, attr, attr_value):
         debug_print("Set %s: %s" % (attr, attr_value))
@@ -129,8 +140,20 @@ class ImageTextSearch:
 
         debug_print(statement)
 
-class ErrorState:
+    def show_full_data(self, filled_data):
+        statement = dict_to_string(filled_data)
+        debug_print(statement)
+
+class ImageData:
+
+    def __init__(self):
+        pass
+
+    def show_csv_text(self, joined_text):
+        statement = "Data:" + joined_text
+        debug_print(statement)
+
+class ErrorState:# TODO
 
     def __init__(self, state):
-        # TODO
         pass
