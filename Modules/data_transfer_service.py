@@ -18,7 +18,7 @@ def begin():
     for photo_name in photos_names:
         image_data = image_processor.image_data_from_image(photo_name)
 
-        if image_data is not None:
+        if image_data.is_valid:
             print "Not None"
             p.append(image_data)
 

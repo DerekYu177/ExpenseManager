@@ -26,24 +26,18 @@ def image_data_from_image(image):
 
     its = ImageTextSearch(text)
 
-    if its.is_photo:
-        return its.analyze()
-
-    return None
+    return its.analyze()
 
 class ImageTextSearch:
 
     def __init__(self, original_text):
         self.original_text = original_text
-        self.core_data = None
-        self.is_photo = self.is_photo_receipt()
+        self.core_data = dict.fromkeys(Core.ANALYSIS_ATTRIBUTES, None)
+        self.core_data = self.populate_core_data()
 
     # Public Facing
 
     def is_photo_receipt(self):
-        empty_core_data = dict.fromkeys(Core.ANALYSIS_ATTRIBUTES, None)
-        self.core_data = self.populate_core_data(empty_core_data)
-
         for attr in Core.ANALYSIS_ATTRIBUTES:
             if (attr in Core.PROCESSED_ATTRIBUTES) and (self.core_data[attr] is None):
                 return False
@@ -53,7 +47,7 @@ class ImageTextSearch:
 
         return True
 
-    def populate_core_data(self, empty_core_data):
+    def populate_core_data(self):
         for attr in Core.ANALYSIS_ATTRIBUTES:
             find_function = getattr(
                 self,
@@ -64,11 +58,10 @@ class ImageTextSearch:
             if debug.LOCAL_DEBUG:
                 debug.show_set_attributes(attr, value)
 
-            empty_core_data[attr] = value
+            self.core_data[attr] = value
 
         if debug.LOCAL_DEBUG:
-            debug.show_full_data(empty_core_data)
-        return empty_core_data
+            debug.show_full_data(self.core_data)
 
     def analyze(self):
         if debug.LOCAL_DEBUG:

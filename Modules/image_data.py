@@ -33,6 +33,13 @@ class ImageData:
         if self.LOCAL_DEBUG:
             self._debug_print_attributes()
 
+    def is_valid(self):
+        for attr in Core.ANALYSIS_ATTRIBUTES:
+            if (attr in Core.PROCESSED_ATTRIBUTES) and (self.raw_data[attr] is None):
+                return False
+
+        return True
+
     def as_csv_text(self):
         self._set_text
         self._normalize_none()
