@@ -3,7 +3,7 @@ from os.path    import isfile
 import re
 
 from ..shared   import GlobalVariables
-from ..debug    import PhotoFileFinder as debug
+from ..debug    import DebugPhotoFileFinder as debug
 
 debug = debug()
 

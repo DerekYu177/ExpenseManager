@@ -13,3 +13,18 @@ class GlobalConstants:
     PERSISTED_DATA = 'persisted_data.csv'
 
     PERSISTED_DATA_PATH = '%s/Data/%s' % (directory, PERSISTED_DATA)
+
+class ImageDataCore:
+    ANALYSIS_ATTRIBUTES = [
+        "date",
+        "time",
+        "address",
+        "total_amount",
+        "description"
+    ]
+
+    PROCESSED_ATTRIBUTES = [
+        "date",
+        "time",
+        "total_amount"
+    ]
