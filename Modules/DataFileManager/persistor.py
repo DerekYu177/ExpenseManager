@@ -4,7 +4,7 @@ import os
 from ..shared import GlobalConstants
 from ..shared import GlobalVariables
 import data_file_helper as DataFileHelper
-from ..debug import Persistor as debug
+from ..debug import DebugPersistor as debug
 
 debug = debug()
 
@@ -89,7 +89,7 @@ class Persistor:
         if debug.LOCAL_DEBUG:
             debug.attempted_written_data(write_data)
 
-        ready_data = write_data.as_csv_text() + NEWLINE
+        ready_data = write_data.as_csv_text() + self.NEWLINE
         if f is not None:
             f.write(ready_data)
         else:

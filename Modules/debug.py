@@ -1,7 +1,6 @@
 from shared import GlobalVariables
 from shared import GlobalConstants
-
-from image_data import Core
+from shared import ImageDataCore
 
 class DebugCore:
     GLOBAL_DEBUG = False
@@ -13,10 +12,11 @@ class DebugCore:
 def set_debug(debug_flag=False):
     debug_print("Set GLOBAL_DEBUG: %s" % debug_flag)
     DebugCore.GLOBAL_DEBUG = debug_flag
-    DataFileHelper.LOCAL_DEBUG = debug_flag
-    Persistor.LOCAL_DEBUG = debug_flag
-    PhotoFileFinder.LOCAL_DEBUG = debug_flag
-    ImageProcessor.LOCAL_DEBUG = debug_flag
+    DebugDataFileHelper.LOCAL_DEBUG = debug_flag
+    DebugPersistor.LOCAL_DEBUG = debug_flag
+    DebugPhotoFileFinder.LOCAL_DEBUG = debug_flag
+    DebugImageProcessor.LOCAL_DEBUG = debug_flag
+    DebugImageData.LOCAL_DEBUG = debug_flag
 
 def show_sys_path():
     import sys
@@ -36,6 +36,10 @@ def text_truncate(text):
     text = text[:DebugCore.MAX_MESSAGE_LENGTH-3]
     text = text + "..."
     return text
+
+def safe_none(attr):
+    if attr is None:
+        return str(attr)
 
 def text_truncate_access_location(location):
     return location # TODO
@@ -62,15 +66,14 @@ def print_debug_with_state(statement, ErrorState):
     # TODO: When states are enabled
     pass
 
-class Service: #TODO
-
+class DebugService: #TODO
     def __init__(self):
         pass
 
     def show_image_data(self, image_data):
         pass
 
-class DataFileHelper:
+class DebugDataFileHelper:
     LOCAL_DEBUG = False
 
     def __init__(self):
@@ -85,7 +88,7 @@ class DataFileHelper:
     def successful_file_and_directory_created(self, file_path):
         debug_print("File/Dir Created: (success) at %s" % (file_path))
 
-class Persistor:
+class DebugPersistor:
     LOCAL_DEBUG = False
 
     def __init__(self):
@@ -97,7 +100,7 @@ class Persistor:
     def successful_written_data(self, write_data):
         debug_print("Written: (Success) %s" % (write_data))
 
-class PhotoFileFinder:
+class DebugPhotoFileFinder:
     LOCAL_DEBUG = False
 
     def __init__(self):
@@ -108,7 +111,7 @@ class PhotoFileFinder:
         statement = statement + list_to_string(observed_photos, 0) + DebugCore.NEWLINE
         debug_print(statement)
 
-class ImageProcessor:
+class DebugImageProcessor:
     LOCAL_DEBUG = False
 
     def __init__(self):
@@ -122,7 +125,7 @@ class ImageProcessor:
         debug_print("Set %s: %s" % (attr, attr_value))
 
     def text_and_relevant_text(self, original_text, relevant_text):
-        statement = "Original Text:" + dict_to_string(original_text) + DebugCore.NEWLINE
+        statement = "Original Text:" + text_tab(original_text, 1) + DebugCore.NEWLINE
         statement = statement + "Relevant text:" + dict_to_string(relevant_text) + DebugCore.NEWLINE
         debug_print(statement)
 
@@ -134,7 +137,7 @@ class ImageProcessor:
     def all_set_attributes(self, obj):
         statement = "Retriving attributes:"
 
-        for attr in Core.ANALYSIS_ATTRIBUTES:
+        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
             message = "Get %s: %s" % (attr, obj.__dict__[attr])
             statement = statement + text_tab(message, 1)
 
@@ -144,7 +147,8 @@ class ImageProcessor:
         statement = dict_to_string(filled_data)
         debug_print(statement)
 
-class ImageData:
+class DebugImageData:
+    LOCAL_DEBUG = False
 
     def __init__(self):
         pass
@@ -153,7 +157,7 @@ class ImageData:
         statement = "Data:" + joined_text
         debug_print(statement)
 
-class ErrorState:# TODO
+class DebugErrorState:# TODO
 
     def __init__(self, state):
         pass

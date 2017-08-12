@@ -5,10 +5,10 @@ from UI import user_interface
 from shared import *
 from image_data import ImageData
 
-import debug
+import debug as global_debug
 
 def begin():
-    debug.set_debug(True)
+    global_debug.set_debug(True)
     initialize_files()
 
     p = persistor.Persistor(False)
@@ -18,9 +18,8 @@ def begin():
     for photo_name in photos_names:
         image_data = image_processor.image_data_from_image(photo_name)
 
-        if image_data is not None:
-            print "Not None"
-            p.append(image_data)
+        # if image_data.is_valid():
+        p.append(image_data)
 
 def initialize_files():
     GlobalVariables.RECEIPT_LOCATION = image_file_when_debugging()

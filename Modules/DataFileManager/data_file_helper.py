@@ -2,7 +2,7 @@ import os
 
 from ..shared import GlobalVariables
 from ..shared import GlobalConstants
-from ..debug import DataFileHelper as debug
+from ..debug import DebugDataFileHelper as debug
 
 debug = debug()
 

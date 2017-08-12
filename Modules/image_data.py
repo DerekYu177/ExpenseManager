@@ -1,19 +1,9 @@
-class Core:
-    ANALYSIS_ATTRIBUTES = [
-        "date",
-        "time",
-        "address",
-        "total_amount",
-        "description"
-    ]
-
-    PROCESSED_ATTRIBUTES = [
-        "date",
-        "time",
-        "total_amount"
-    ]
+from shared import ImageDataCore
+from debug import DebugImageData as debug
+debug = debug()
 
 class ImageData:
+
     MAX_ADDRESS_LENGTH = 10
     LOCAL_DEBUG = False
 
@@ -33,10 +23,18 @@ class ImageData:
         if self.LOCAL_DEBUG:
             self._debug_print_attributes()
 
+    def is_valid(self):
+        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
+            if (attr in ImageDataCore.PROCESSED_ATTRIBUTES) and (self.raw_data[attr] is None):
+                return False
+
+        return True
+
     def as_csv_text(self):
-        self._set_text
+        self.attr_list = self._set_text()
         self._normalize_none()
 
+        print "DEBUG: self.attr_list: %s" % (self.attr_list)
         text = ",".join(self.attr_list)
         debug.show_csv_text(text)
         return text
@@ -45,7 +43,7 @@ class ImageData:
         return self._date_time()
 
     def _set_text(self):
-        self.attr_list = [
+        return [
             self._date_time(),
             self._shorten_address(),
             self.total_amount,
@@ -53,10 +51,12 @@ class ImageData:
         ]
 
     def _assign_instance_variables(self):
-        for attr in Core.ANALYSIS_ATTRIBUTES:
+        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
             setattr(self, attr, self.raw_data[attr])
 
     def _date_time(self):
+        if self.date is None: return self.date
+
         date = self.date.replace("/","")
         time = self.time
 
@@ -64,6 +64,7 @@ class ImageData:
 
     def _shorten_address(self):
         if self.address is None: return self.address
+
         if len(self.address) < self.MAX_ADDRESS_LENGTH: return self.address
 
         address = self.address[:self.MAX_ADDRESS_LENGTH-3]
@@ -72,9 +73,9 @@ class ImageData:
         return address
 
     def _normalize_none(self):
-        for attr, position in enumerate(self.attr_list):
+        for pos, attr in enumerate(self.attr_list):
             if attr is None:
-                self.attr_list[position] = "None"
+                self.attr_list[pos] = str(None)
 
     def _debug_print_attributes(self):
         print "self.date: %s" % (self.date)
