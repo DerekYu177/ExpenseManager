@@ -1,9 +1,14 @@
 from shared import GlobalVariables
 from shared import GlobalConstants
 from shared import ImageDataCore
+from states import DebugStates
 
-def begin():
-    ErrorStateController.new()
+class DebugCore:
+    GLOBAL_DEBUG = False
+    DEBUG_COUNTER = 0
+    MAX_MESSAGE_LENGTH = 100
+    VERBOSE = True
+    NEWLINE = "\n"
 
 def set_debug(debug_flag=False):
     debug_print("Set GLOBAL_DEBUG: %s" % debug_flag)
@@ -138,7 +143,6 @@ class DebugImageProcessor:
             statement = statement + text_tab(message, 1)
 
         debug_print(statement)
-<<<<<<< HEAD
 
     def show_full_data(self, filled_data):
         statement = dict_to_string(filled_data)
@@ -158,5 +162,3 @@ class DebugErrorState:# TODO
 
     def __init__(self, state):
         pass
-=======
->>>>>>> Using Enums to represent states instead of an FSM-style implementation

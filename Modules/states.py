@@ -1,5 +1,5 @@
 from enum import Enum
 
-class ErrorStates(Enum):
+class DebugStates(Enum):
     off = 0
     on = 1
