@@ -26,8 +26,6 @@ def initialize_files():
     data_file_helper.initialize_data_file()
 
 def image_file_when_debugging():
-    # TODO: Unable to update and use GlobalVariables.DEBUG
-
     if not global_debug.DebugCore.GLOBAL_DEBUG:
         return user_interface.prompt_user_for_location()
 
