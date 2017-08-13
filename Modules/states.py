@@ -1,5 +1,5 @@
 from enum import Enum
 
-class DebugStates(Enum):
-    off = 0
-    on = 1
+class Debug(Enum):
+    Off = 0
+    On = 1

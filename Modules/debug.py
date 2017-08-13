@@ -1,7 +1,6 @@
 from shared import GlobalVariables
 from shared import GlobalConstants
 from shared import ImageDataCore
-from states import DebugStates
 
 class DebugCore:
     GLOBAL_DEBUG = False
