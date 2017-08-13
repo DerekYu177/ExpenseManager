@@ -138,6 +138,7 @@ class DebugImageProcessor:
             statement = statement + text_tab(message, 1)
 
         debug_print(statement)
+<<<<<<< HEAD
 
     def show_full_data(self, filled_data):
         statement = dict_to_string(filled_data)
@@ -157,3 +158,5 @@ class DebugErrorState:# TODO
 
     def __init__(self, state):
         pass
+=======
+>>>>>>> Using Enums to represent states instead of an FSM-style implementation
