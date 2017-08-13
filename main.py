@@ -3,13 +3,12 @@
 # built-in classes
 import Modules.data_transfer_service as servicer
 
-def main():
-
-    # path = "%s/medium_def_receipt.jpg" % (shared.GlobalVariables.IMAGE_LOCATION)
-    #
-    # ui = user_interface.UserInterface()
-    # ui.display_image(path)
+def main(input_args):
     servicer.begin()
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv[1:])
+
+class CLI:
+    def __init__(self, input_args):
+        pass
