@@ -18,15 +18,13 @@ def begin():
     for photo_name in photos_names:
         image_data = image_processor.image_data_from_image(photo_name)
 
-        # if image_data.is_valid():
-        p.append(image_data)
+        p.protected_t_append(image_data)
 
 def initialize_files():
     GlobalVariables.RECEIPT_LOCATION = image_file_when_debugging()
-    data_file_helper.initialize_data_file()
 
 def image_file_when_debugging():
-    if not debug.DebugCore.GLOBAL_DEBUG:
+    if not global_debug.DebugCore.GLOBAL_DEBUG:
         return user_interface.prompt_user_for_location()
 
     return GlobalVariables.IMAGE_LOCATION

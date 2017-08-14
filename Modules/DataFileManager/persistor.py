@@ -5,6 +5,7 @@ from ..shared import GlobalConstants
 from ..shared import GlobalVariables
 import data_file_helper as DataFileHelper
 from ..debug import DebugPersistor as debug
+from enum import Enum
 
 debug = debug()
 
@@ -22,7 +23,17 @@ class Persistor:
         self._prepare_data_file()
 
     def close(self):
+        if self.f is None:
+            return
+
         self.f.close()
+
+    def protected_t_append(self, write_data):
+        state = self._temporary_query(write_data)
+        if (state is Identification.FOUND) or (state is Identification.IS_NONE):
+            return
+
+        self._temporary_append(write_data)
 
     def append(self, write_data):
         if self.p_state:
@@ -31,6 +42,7 @@ class Persistor:
             self._temporary_append(write_data)
 
     def query(self, write_data):
+        # true: the item exists
         if self.p_state:
             self._persisted_query(write_data)
         else:
@@ -53,47 +65,66 @@ class Persistor:
             self.f = None
 
     def _persisted_append(self, write_data):
-        if DataFileHelper.is_file_empty():
-            self._write_with_debug(write_data)
-        elif not _persisted_query(write_data):
-            self._write_with_debug(write_data)
-        else:
-            return
-
-    def _persisted_query(self, new_data):
-        identifier = new_data.identifier()
-        text = csv.reader(self.f, delimiter=",")
-        return self._find_by_identifier(text, identifier)
+        self._write_with_debug(write_data)
 
     def _temporary_append(self, write_data):
         f = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
         self._write_with_debug(write_data, f)
         f.close()
 
-    def _temporary_query(self, new_data, identifier):
+    def _persisted_query(self, new_data):
+        return self._query_with_debug(new_data)
+
+    def _temporary_query(self, new_data):
         f = open(GlobalConstants.PERSISTED_DATA_PATH, "r") #read only
-        text = csv.reader(f, delimiter=",")
-        text_found = self._find_by_identifier(text, identifier)
+        text_found = self._query_with_debug(new_data, f)
         f.close()
 
         return text_found
 
-    def _find_by_identifier(self, text, identifier):
-        for row in text:
-            if row[0] == identifier:
-                return True
-
-        return False
-
     def _write_with_debug(self, write_data, f=None):
         if debug.LOCAL_DEBUG:
-            debug.attempted_written_data(write_data)
+            debug.attempted_written_data(write_data.as_csv_text(), self.p_state)
 
         ready_data = write_data.as_csv_text() + self.NEWLINE
-        if f is not None:
-            f.write(ready_data)
-        else:
-            self.f.write(ready_data)
+
+        getattr(self._file(f), "write")(ready_data)
 
         if debug.LOCAL_DEBUG:
-            debug.successful_written_data(write_data)
+            debug.successful_written_data(write_data.as_csv_text(), self.p_state)
+
+    def _query_with_debug(self, new_data, f=None):
+        identifier = new_data.identifier()
+
+        if debug.LOCAL_DEBUG:
+            debug.attempted_query(new_data.as_csv_text(), self.p_state)
+
+        text = csv.reader(self._file(f), delimiter=",")
+        text_found = self._find_by_identifier(text, identifier)
+
+        if debug.LOCAL_DEBUG:
+            debug.successful_query(new_data.as_csv_text(), self.p_state, text_found)
+
+        return text_found
+
+    def _find_by_identifier(self, text, identifier):
+        if (identifier is None) or (identifier is str(None)):
+            # we don't want to write None
+            return Identification.IS_NONE
+
+        for row in text:
+            if row[0] == identifier:
+                return Identification.FOUND
+
+        return Identification.NOT_FOUND
+
+    def _file(self, f=None):
+        if f is not None:
+            return f
+        else:
+            return self.f
+
+class Identification(Enum):
+    NOT_FOUND = 0
+    FOUND = 1
+    IS_NONE = 2

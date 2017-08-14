@@ -45,9 +45,15 @@ def text_truncate_access_location(location):
     return location # TODO
 
 def text_tab(text, tab):
-    space_number = tab * 2
+    space_number = tab * 3
     space = " "
     return space_number * space + text
+
+def indent_text(text, current_indentation=0):
+    statement = DebugCore.NEWLINE
+    for line in text.split(DebugCore.NEWLINE):
+        statement = statement + text_tab(line, current_indentation + 1) + DebugCore.NEWLINE
+    return statement
 
 def list_to_string(item_in_list, current_indentation=0):
     statement = DebugCore.NEWLINE
@@ -94,11 +100,30 @@ class DebugPersistor:
     def __init__(self):
         pass
 
-    def attempted_written_data(self, write_data):
-        debug_print("Written: (Attempt) %s" % (write_data))
+    def attempted_query(self, write_data, p_state):
+        statement = "Query: (Attempt) (%s) %s" % (self._p_state(p_state), write_data)
+        debug_print(statement)
 
-    def successful_written_data(self, write_data):
-        debug_print("Written: (Success) %s" % (write_data))
+    def successful_query(self, write_data, p_state, result):
+        statement = "Query: (Success) (%s) %s, Result: %s" % (self._p_state(p_state), write_data, self._result(result))
+        debug_print(statement)
+
+    def attempted_written_data(self, write_data, p_state):
+        statement = "Write: (Attempt) (%s) %s" % (self._p_state(p_state), write_data)
+        debug_print(statement)
+
+    def successful_written_data(self, write_data, p_state):
+        statement = "Write: (Success) (%s) %s" % (self._p_state(p_state), write_data)
+        debug_print(statement)
+
+    def _p_state(self, p_state):
+        if p_state:
+            return "Persisted"
+        else:
+            return "Temporary"
+
+    def _result(self, result):
+        return result.name.lower()
 
 class DebugPhotoFileFinder:
     LOCAL_DEBUG = False
@@ -125,9 +150,12 @@ class DebugImageProcessor:
         debug_print("Set %s: %s" % (attr, attr_value))
 
     def text_and_relevant_text(self, original_text, relevant_text):
-        statement = "Original Text:" + text_tab(original_text, 1) + DebugCore.NEWLINE
-        statement = statement + "Relevant text:" + dict_to_string(relevant_text) + DebugCore.NEWLINE
-        debug_print(statement)
+        statement_1 = "Original Text:" + DebugCore.NEWLINE
+        statement_1 = statement_1 + indent_text(original_text)
+        debug_print(statement_1)
+
+        statement_2 = "Relevant text:" + dict_to_string(relevant_text) + DebugCore.NEWLINE
+        debug_print(statement_2)
 
     def append_original_text(self, text):
         return {

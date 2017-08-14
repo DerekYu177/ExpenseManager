@@ -49,9 +49,6 @@ class ImageTextSearch:
             )
             value = find_function()
 
-            if debug.LOCAL_DEBUG:
-                debug.show_set_attributes(attr, value)
-
             self.core_data[attr] = value
 
         if debug.LOCAL_DEBUG:
