@@ -123,10 +123,7 @@ class DebugPersistor:
             return "Temporary"
 
     def _result(self, result):
-        if result:
-            return "Found"
-        else:
-            return "Not Found"
+        return result.name.lower()
 
 class DebugPhotoFileFinder:
     LOCAL_DEBUG = False

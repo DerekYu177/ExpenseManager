@@ -5,6 +5,7 @@ from ..shared import GlobalConstants
 from ..shared import GlobalVariables
 import data_file_helper as DataFileHelper
 from ..debug import DebugPersistor as debug
+from enum import Enum
 
 debug = debug()
 
@@ -28,7 +29,8 @@ class Persistor:
         self.f.close()
 
     def protected_t_append(self, write_data):
-        if self._temporary_query(write_data):
+        state = self._temporary_query(write_data)
+        if (state is Identification.FOUND) or (state is Identification.IS_NONE):
             return
 
         self._temporary_append(write_data)
@@ -106,18 +108,23 @@ class Persistor:
         return text_found
 
     def _find_by_identifier(self, text, identifier):
-        if identifier is None or str(None):
+        if (identifier is None) or (identifier is str(None)):
             # we don't want to write None
-            return True
+            return Identification.IS_NONE
 
         for row in text:
             if row[0] == identifier:
-                return True
+                return Identification.FOUND
 
-        return False
+        return Identification.NOT_FOUND
 
     def _file(self, f=None):
         if f is not None:
             return f
         else:
             return self.f
+
+class Identification(Enum):
+    NOT_FOUND = 0
+    FOUND = 1
+    IS_NONE = 2
