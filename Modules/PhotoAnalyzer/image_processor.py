@@ -28,7 +28,6 @@ def image_data_from_image(image):
     return ImageTextSearch(text).analyze()
 
 class ImageTextSearch:
-
     def __init__(self, original_text):
         self.original_text = original_text
         self.core_data = dict.fromkeys(ImageDataCore.ANALYSIS_ATTRIBUTES, None)
@@ -42,47 +41,60 @@ class ImageTextSearch:
         return ImageData(self.core_data)
 
     def _populate_core_data(self):
-        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
-            find_function = getattr(
-                self,
-                self._define_finders(attr)
-            )
-            value = find_function()
+        f = Finder(self.original_text)
 
+        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
+            find_function = getattr(f, f.define_finders(attr))
+            value = find_function()
             self.core_data[attr] = value
 
         if debug.LOCAL_DEBUG:
             debug.show_full_data(self.core_data)
 
-    # Finders
+class Finder(object): # new class structure here
+    def __init__(self, text):
+        self.text = text
 
-    def _define_finders(self, attr):
-        return "_find_%s" % (attr)
+    def find(self, regex):
+        match = re.findall(regex, self.text)
 
-    def _find_date(self):
+        if not match:
+            return None
+        elif len(match) == 1:
+            return match[0]
+        else:
+            return match
+
+    def define_finders(self, attr):
+        return "find_%s" % (attr)
+
+    def find_date(self):
         date_regex = r'(\d+/\d+/\d+)'
-        return self._search(date_regex)
+        return self.find(date_regex)
 
-    def _find_time(self):
+    def find_time(self):
         time_regex = r'(\d+:\d+:\d+)'
-        return self._search(time_regex)
+        return self.find(time_regex)
 
-    def _find_address(self):
+    def find_address(self):
         return None # TODO
 
-    def _find_total_amount(self):
-        money_regex = r'[$]\s*\d+\.\d{2}'
-        amounts = self._search(money_regex)
+    def find_total_amount(self):
+        return Money(self.text).find_total_amount()
+
+    def find_description(self):
+        return None # TODO
+
+class Money(Finder):
+    regex = r'[$]\s*\d+\.\d{2}'
+
+    def find_total_amount(self):
+        amounts = super(Money, self).find(self.regex)
         return self._max_amounts(amounts)
-
-    def _find_description(self):
-        return None # TODO
-
-    # Helpers
 
     def _max_amounts(self, money_list):
         if money_list is None:
-            return money_list
+            return None
 
         if type(money_list) is str:
             return money_list
@@ -123,14 +135,3 @@ class ImageTextSearch:
             return number + "0"
         else:
             return number
-
-    def _search(self, regex):
-        match = re.findall(regex, self.original_text)
-
-        if not match:
-            return None
-
-        if len(match) == 1:
-            return match[0]
-
-        return match

@@ -105,7 +105,7 @@ class DebugPersistor:
         debug_print(statement)
 
     def successful_query(self, write_data, p_state, result):
-        statement = "Query: (Success) (%s) %s, Result: %s" % (self._p_state(p_state), write_data, self._result(result))
+        statement = "Query: (Success) (%s) (%s) %s" % (self._p_state(p_state), self._result(result), write_data)
         debug_print(statement)
 
     def attempted_written_data(self, write_data, p_state):
@@ -123,7 +123,7 @@ class DebugPersistor:
             return "Temporary"
 
     def _result(self, result):
-        return result.name.lower()
+        return result.name
 
 class DebugPhotoFileFinder:
     LOCAL_DEBUG = False
