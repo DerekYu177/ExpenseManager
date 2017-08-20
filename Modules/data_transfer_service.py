@@ -21,9 +21,10 @@ def begin():
         p.protected_t_append(image_data)
 
 def initialize_files():
-    GlobalVariables.RECEIPT_LOCATION = image_file_when_debugging()
 
-def image_file_when_debugging():
+    GlobalVariables.RECEIPT_LOCATION = _image_file_when_debugging()
+
+def _image_file_when_debugging():
     if not global_debug.DebugCore.GLOBAL_DEBUG:
         return user_interface.prompt_user_for_location()
 

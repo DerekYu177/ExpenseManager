@@ -1,3 +1,5 @@
+from enum import Enum
+
 from shared import GlobalVariables
 from shared import GlobalConstants
 from shared import ImageDataCore
@@ -185,7 +187,7 @@ class DebugImageData:
         statement = "Data:" + joined_text
         debug_print(statement)
 
-class DebugErrorState:# TODO
-
-    def __init__(self, state):
-        pass
+class DebugState(Enum):
+    NOMINAL = 0
+    STATUS = 1
+    VERBOSE = 2
