@@ -17,8 +17,7 @@ debug = debug()
 def image_data_from_image(image):
     image_location = GlobalVariables.IMAGE_LOCATION + "/" + image
 
-    if debug.LOCAL_DEBUG:
-        debug.show_image_name(image_location)
+    debug.show_image_name(image_location)
 
     text = pytesseract.image_to_string(
         img.open(image_location)
@@ -33,9 +32,8 @@ class ImageTextSearch:
         self._populate_core_data()
 
     def analyze(self):
-        if debug.LOCAL_DEBUG:
-            debug.text_and_relevant_text(self.original_text, self.core_data)
-            self.core_data.update(debug.append_original_text(self.core_data))
+        debug.text_and_relevant_text(self.original_text, self.core_data)
+        self.core_data.update(debug.append_original_text(self.core_data))
 
         return ImageData(self.core_data)
 
@@ -47,5 +45,4 @@ class ImageTextSearch:
             value = find_function()
             self.core_data[attr] = value
 
-        if debug.LOCAL_DEBUG:
-            debug.show_full_data(self.core_data)
+        debug.show_full_data(self.core_data)

@@ -83,27 +83,23 @@ class Persistor:
         return text_found
 
     def _write_with_debug(self, write_data, f=None):
-        if debug.LOCAL_DEBUG:
-            debug.attempted_written_data(write_data.as_csv_text(), self.p_state)
+        debug.attempted_written_data(write_data.as_csv_text(), self.p_state)
 
         ready_data = write_data.as_csv_text() + self.NEWLINE
 
         getattr(self._file(f), "write")(ready_data)
 
-        if debug.LOCAL_DEBUG:
-            debug.successful_written_data(write_data.as_csv_text(), self.p_state)
+        debug.successful_written_data(write_data.as_csv_text(), self.p_state)
 
     def _query_with_debug(self, new_data, f=None):
         identifier = new_data.identifier()
 
-        if debug.LOCAL_DEBUG:
-            debug.attempted_query(new_data.as_csv_text(), self.p_state)
+        debug.attempted_query(new_data.as_csv_text(), self.p_state)
 
         text = csv.reader(self._file(f), delimiter=",")
         text_found = self._find_by_identifier(text, identifier)
 
-        if debug.LOCAL_DEBUG:
-            debug.successful_query(new_data.as_csv_text(), self.p_state, text_found)
+        debug.successful_query(new_data.as_csv_text(), self.p_state, text_found)
 
         return text_found
 

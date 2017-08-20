@@ -1,4 +1,5 @@
 from enum import Enum
+from functools import wraps
 
 from shared import GlobalVariables
 from shared import GlobalConstants
@@ -14,11 +15,11 @@ class DebugCore:
 def set_debug(debug_flag=False):
     debug_print("Set GLOBAL_DEBUG: %s" % debug_flag)
     DebugCore.GLOBAL_DEBUG = debug_flag
-    DebugDataFileHelper.LOCAL_DEBUG = debug_flag
-    DebugPersistor.LOCAL_DEBUG = debug_flag
-    DebugPhotoFileFinder.LOCAL_DEBUG = debug_flag
-    DebugImageProcessor.LOCAL_DEBUG = debug_flag
-    DebugImageData.LOCAL_DEBUG = debug_flag
+    DebugDataFileHelper.CALL_STATUS = debug_flag
+    DebugPersistor.CALL_STATUS = debug_flag
+    DebugPhotoFileFinder.CALL_STATUS = debug_flag
+    DebugImageProcessor.CALL_STATUS = debug_flag
+    DebugImageData.CALL_STATUS = debug_flag
 
 def show_sys_path():
     import sys
@@ -74,6 +75,13 @@ def print_debug_with_state(statement, ErrorState):
     # TODO: When states are enabled
     pass
 
+def can_call(func):
+    @wraps(func)
+    def respond_depending_on_state(*args):
+        if not args[0].CALL_STATUS: return
+        return func(*args)
+    return respond_depending_on_state
+
 class DebugService: #TODO
     def __init__(self):
         pass
@@ -82,38 +90,44 @@ class DebugService: #TODO
         pass
 
 class DebugDataFileHelper:
-    LOCAL_DEBUG = False
+    CALL_STATUS = False
 
     def __init__(self):
         pass
 
+    @can_call
     def file_and_directory(self, file_path, directory_exists, file_exists):
         statement = "File path: %s" % (file_path) + DebugCore.NEWLINE
         statement = statement + "Directory exist?: %s" % (directory_exists) + DebugCore.NEWLINE
         statement = statement + "File exist?: %s" % (file_exists) + DebugCore.NEWLINE
         debug_print(statement)
 
+    @can_call
     def successful_file_and_directory_created(self, file_path):
         debug_print("File/Dir Created: (success) at %s" % (file_path))
 
 class DebugPersistor:
-    LOCAL_DEBUG = False
+    CALL_STATUS = False
 
     def __init__(self):
         pass
 
+    @can_call
     def attempted_query(self, write_data, p_state):
         statement = "Query: (Attempt) (%s) %s" % (self._p_state(p_state), write_data)
         debug_print(statement)
 
+    @can_call
     def successful_query(self, write_data, p_state, result):
         statement = "Query: (Success) (%s) (%s) %s" % (self._p_state(p_state), self._result(result), write_data)
         debug_print(statement)
 
+    @can_call
     def attempted_written_data(self, write_data, p_state):
         statement = "Write: (Attempt) (%s) %s" % (self._p_state(p_state), write_data)
         debug_print(statement)
 
+    @can_call
     def successful_written_data(self, write_data, p_state):
         statement = "Write: (Success) (%s) %s" % (self._p_state(p_state), write_data)
         debug_print(statement)
@@ -128,29 +142,33 @@ class DebugPersistor:
         return result.name
 
 class DebugPhotoFileFinder:
-    LOCAL_DEBUG = False
+    CALL_STATUS = False
 
     def __init__(self):
         pass
 
+    @can_call
     def print_all_photo_files_in_location(self, observed_photos):
         statement = ("Receipt location: %s" % GlobalVariables.RECEIPT_LOCATION) + DebugCore.NEWLINE
         statement = statement + list_to_string(observed_photos, 0) + DebugCore.NEWLINE
         debug_print(statement)
 
 class DebugImageProcessor:
-    LOCAL_DEBUG = False
+    CALL_STATUS = False
 
     def __init__(self):
         pass
 
+    @can_call
     def show_image_name(self, image_location):
         statement = "The current photo is:" + image_location
         debug_print(statement)
 
+    @can_call
     def show_set_attributes(self, attr, attr_value):
         debug_print("Set %s: %s" % (attr, attr_value))
 
+    @can_call
     def text_and_relevant_text(self, original_text, relevant_text):
         statement_1 = "Original Text:" + DebugCore.NEWLINE
         statement_1 = statement_1 + indent_text(original_text)
@@ -159,11 +177,7 @@ class DebugImageProcessor:
         statement_2 = "Relevant text:" + dict_to_string(relevant_text) + DebugCore.NEWLINE
         debug_print(statement_2)
 
-    def append_original_text(self, text):
-        return {
-            "original text": text,
-        }
-
+    @can_call
     def all_set_attributes(self, obj):
         statement = "Retriving attributes:"
 
@@ -173,16 +187,24 @@ class DebugImageProcessor:
 
         debug_print(statement)
 
+    @can_call
     def show_full_data(self, filled_data):
         statement = dict_to_string(filled_data)
         debug_print(statement)
 
+    @can_call
+    def append_original_text(self, text):
+        return {
+            "original text": text,
+        }
+
 class DebugImageData:
-    LOCAL_DEBUG = False
+    CALL_STATUS = False
 
     def __init__(self):
         pass
 
+    @can_call
     def show_csv_text(self, joined_text):
         statement = "Data:" + joined_text
         debug_print(statement)

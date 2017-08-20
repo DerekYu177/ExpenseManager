@@ -16,8 +16,7 @@ def find_photos():
         if is_photo(photo):
             photos.append(photo)
 
-    if debug.LOCAL_DEBUG:
-        debug.print_all_photo_files_in_location(photos)
+    debug.print_all_photo_files_in_location(photos)
 
     return photos
 
