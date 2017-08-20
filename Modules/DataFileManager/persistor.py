@@ -30,7 +30,7 @@ class Persistor:
 
     def protected_t_append(self, write_data):
         state = self._temporary_query(write_data)
-        if (state is Identification.FOUND) or (state is Identification.IS_NONE):
+        if (state is Identification.EXISTS) or (state is Identification.IS_NONE):
             return
 
         self._temporary_append(write_data)
@@ -114,9 +114,9 @@ class Persistor:
 
         for row in text:
             if row[0] == identifier:
-                return Identification.FOUND
+                return Identification.EXISTS
 
-        return Identification.NOT_FOUND
+        return Identification.NEW_ENTRY
 
     def _file(self, f=None):
         if f is not None:
@@ -125,6 +125,6 @@ class Persistor:
             return self.f
 
 class Identification(Enum):
-    NOT_FOUND = 0
-    FOUND = 1
+    NEW_ENTRY = 0
+    EXISTS = 1
     IS_NONE = 2
