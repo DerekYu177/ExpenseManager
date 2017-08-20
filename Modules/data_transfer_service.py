@@ -7,24 +7,23 @@ from image_data import ImageData
 
 import debug as global_debug
 
-def begin():
-    global_debug.set_debug(True)
-    initialize_files()
+class DataTransferService:
+    DEBUG_STATE = True
+    PERSISTANCE_STATE = False
 
-    p = persistor.Persistor(False)
+    def __init__(self):
+        global_debug.set_debug(self.DEBUG_STATE)
+        GlobalVariables.RECEIPT_LOCATION = self._image_file()
+        self.p = persistor.Persistor(self.PERSISTANCE_STATE)
+        self.photos_names = photo_file_finder.find_photos()
 
-    photos_names = photo_file_finder.find_photos()
+    def begin(self):
+        for photo_name in self.photos_names:
+            image_data = image_processor.image_data_from_image(photo_name)
+            self.p.protected_t_append(image_data)
 
-    for photo_name in photos_names:
-        image_data = image_processor.image_data_from_image(photo_name)
+    def _image_file(self):
+        if not global_debug.DebugCore.GLOBAL_DEBUG:
+            return user_interface.prompt_user_for_location()
 
-        p.protected_t_append(image_data)
-
-def initialize_files():
-    GlobalVariables.RECEIPT_LOCATION = image_file_when_debugging()
-
-def image_file_when_debugging():
-    if not global_debug.DebugCore.GLOBAL_DEBUG:
-        return user_interface.prompt_user_for_location()
-
-    return GlobalVariables.IMAGE_LOCATION
+        return GlobalVariables.IMAGE_LOCATION
