@@ -13,7 +13,7 @@ def begin():
 
     p = persistor.Persistor(False)
 
-    photos_names = photo_file_finder.get_photo_names()
+    photos_names = photo_file_finder.find_photos()
 
     for photo_name in photos_names:
         image_data = image_processor.image_data_from_image(photo_name)
