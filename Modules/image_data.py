@@ -20,9 +20,6 @@ class ImageData:
         self.raw_data = data
         self._assign_instance_variables()
 
-        if self.LOCAL_DEBUG:
-            self._debug_print_attributes()
-
     def is_valid(self):
         for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
             if (attr in ImageDataCore.PROCESSED_ATTRIBUTES) and (self.raw_data[attr] is None):
@@ -73,10 +70,3 @@ class ImageData:
         for pos, attr in enumerate(self.attr_list):
             if attr is None:
                 self.attr_list[pos] = str(None)
-
-    def _debug_print_attributes(self):
-        print "self.date: %s" % (self.date)
-        print "self.time: %s" % (self.time)
-        print "self.address: %s" % (self.address)
-        print "self.total_amount: %s" % (self.total_amount)
-        print "self.description: %s" % (self.description)
