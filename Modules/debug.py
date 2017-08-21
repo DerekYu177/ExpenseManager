@@ -92,10 +92,6 @@ class BaseDebug:
             statement = statement + self.text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
         return statement
 
-    def print_debug_with_state(self, statement, ErrorState):
-        # TODO: When states are enabled
-        pass
-
 class DebugService(BaseDebug): #TODO
     CALL_STATUS = DebugState.OFF
     VERBOSE_METHODS = []
