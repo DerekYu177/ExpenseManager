@@ -8,19 +8,26 @@ from shared import ImageDataCore
 def can_call(func):
     @wraps(func)
     def respond_depending_on_state(*args):
-        if not args[0].CALL_STATUS: return
-        return func(*args)
+        state = args[0].CALL_STATUS
+        verbose_methods = args[0].VERBOSE_METHODS
+
+        if (state is DebugState.BASIC) and (func in verbose_methods):
+            return func(*args)
+        elif (state is DebugState.VERBOSE):
+            return func(*args)
+        return
+
     return respond_depending_on_state
 
 class DebugCore:
-    GLOBAL_DEBUG = False
+    GLOBAL_DEBUG = DebugState.OFF
     DEBUG_COUNTER = 0
     MAX_MESSAGE_LENGTH = 100
-    VERBOSE = True
+    VERBOSE_METHODS = True
     NEWLINE = "\n"
 
 class BaseDebug:
-    def set_debug(self, debug_flag=False):
+    def set_debug(self, debug_flag=DebugState.OFF):
         self.debug_print("Set GLOBAL_DEBUG: %s" % debug_flag)
         DebugCore.GLOBAL_DEBUG = debug_flag
         DebugDataFileHelper.CALL_STATUS = debug_flag
@@ -41,7 +48,7 @@ class BaseDebug:
         DebugCore.DEBUG_COUNTER = DebugCore.DEBUG_COUNTER + 1
 
     def text_truncate(self, text):
-        if DebugCore.VERBOSE or len(text) < DebugCore.MAX_MESSAGE_LENGTH:
+        if DebugCore.VERBOSE_METHODS or len(text) < DebugCore.MAX_MESSAGE_LENGTH:
             return text
 
         text = text[:DebugCore.MAX_MESSAGE_LENGTH-3]
@@ -84,6 +91,9 @@ class BaseDebug:
         pass
 
 class DebugService(BaseDebug): #TODO
+    CALL_STATUS = DebugState.OFF
+    VERBOSE_METHODS = []
+
     def __init__(self):
         pass
 
@@ -91,7 +101,8 @@ class DebugService(BaseDebug): #TODO
         pass
 
 class DebugDataFileHelper(BaseDebug):
-    CALL_STATUS = False
+    CALL_STATUS = DebugState.OFF
+    VERBOSE_METHODS = []
 
     def __init__(self):
         pass
@@ -108,7 +119,8 @@ class DebugDataFileHelper(BaseDebug):
         self.debug_print("File/Dir Created: (success) at %s" % (file_path))
 
 class DebugPersistor(BaseDebug):
-    CALL_STATUS = False
+    CALL_STATUS = DebugState.OFF
+    VERBOSE_METHODS = []
 
     def __init__(self):
         pass
@@ -143,7 +155,8 @@ class DebugPersistor(BaseDebug):
         return result.name
 
 class DebugPhotoFileFinder(BaseDebug):
-    CALL_STATUS = False
+    CALL_STATUS = DebugState.OFF
+    VERBOSE_METHODS = []
 
     def __init__(self):
         pass
@@ -155,7 +168,10 @@ class DebugPhotoFileFinder(BaseDebug):
         self.debug_print(statement)
 
 class DebugImageProcessor(BaseDebug):
-    CALL_STATUS = False
+    CALL_STATUS = DebugState.OFF
+    VERBOSE_METHODS = [
+        text_and_relevant_text
+    ]
 
     def __init__(self):
         pass
@@ -200,7 +216,8 @@ class DebugImageProcessor(BaseDebug):
         }
 
 class DebugImageData(BaseDebug):
-    CALL_STATUS = False
+    CALL_STATUS = DebugState.OFF
+    VERBOSE_METHODS = []
 
     def __init__(self):
         pass
@@ -213,4 +230,4 @@ class DebugImageData(BaseDebug):
 class DebugState(Enum):
     OFF = 0
     BASIC = 1
-    VERBOSE = 2
+    VERBOSE_METHODS = 2
