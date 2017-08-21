@@ -5,14 +5,16 @@ from UI import user_interface
 from shared import *
 from image_data import ImageData
 
-import debug as global_debug
+from debug import BaseDebug
+from debug import DebugCore
+from debug import DebugState
 
 class DataTransferService:
     DEBUG_STATE = True
     PERSISTANCE_STATE = False
 
     def __init__(self):
-        global_debug.set_debug(self.DEBUG_STATE)
+        BaseDebug().set_debug(self.DEBUG_STATE)
         GlobalVariables.RECEIPT_LOCATION = self._image_file()
         self.p = persistor.Persistor(self.PERSISTANCE_STATE)
         self.photos_names = photo_file_finder.find_photos()
@@ -23,7 +25,7 @@ class DataTransferService:
             self.p.protected_t_append(image_data)
 
     def _image_file(self):
-        if not global_debug.DebugCore.GLOBAL_DEBUG:
+        if not DebugCore.GLOBAL_DEBUG:
             return user_interface.prompt_user_for_location()
 
         return GlobalVariables.IMAGE_LOCATION
