@@ -8,16 +8,26 @@ from shared import ImageDataCore
 def can_call(func):
     @wraps(func)
     def respond_depending_on_state(*args):
-        state = args[0].CALL_STATUS
-        verbose_methods = args[0].VERBOSE_METHODS
-
-        if (state is DebugState.BASIC) and (func in verbose_methods):
+        klass = args[0]
+        state = klass.CALL_STATUS
+        if (state is DebugState.BASIC) and not _is_verbose(func, klass):
             return func(*args)
         elif (state is DebugState.VERBOSE):
             return func(*args)
         return
 
     return respond_depending_on_state
+
+def _is_verbose(function, klass):
+    if (function.func_name in klass.VERBOSE_METHODS):
+        return True
+    else:
+        return False
+
+class DebugState(Enum):
+    OFF = 0
+    BASIC = 1
+    VERBOSE = 2
 
 class DebugCore:
     GLOBAL_DEBUG = DebugState.OFF
@@ -28,7 +38,7 @@ class DebugCore:
 
 class BaseDebug:
     def set_debug(self, debug_flag=DebugState.OFF):
-        self.debug_print("Set GLOBAL_DEBUG: %s" % debug_flag)
+        self.debug_print("Set GLOBAL_DEBUG: %s" % debug_flag.name)
         DebugCore.GLOBAL_DEBUG = debug_flag
         DebugDataFileHelper.CALL_STATUS = debug_flag
         DebugPersistor.CALL_STATUS = debug_flag
@@ -54,10 +64,6 @@ class BaseDebug:
         text = text[:DebugCore.MAX_MESSAGE_LENGTH-3]
         text = text + "..."
         return text
-
-    def safe_none(self, attr):
-        if attr is None:
-            return str(attr)
 
     def text_truncate_access_location(self, location):
         return location # TODO
@@ -170,11 +176,16 @@ class DebugPhotoFileFinder(BaseDebug):
 class DebugImageProcessor(BaseDebug):
     CALL_STATUS = DebugState.OFF
     VERBOSE_METHODS = [
-        text_and_relevant_text
+        "text_and_relevant_text"
     ]
 
     def __init__(self):
         pass
+
+    def append_original_text(self, text):
+        return {
+            "original text": text,
+        }
 
     @can_call
     def show_image_name(self, image_location):
@@ -209,12 +220,6 @@ class DebugImageProcessor(BaseDebug):
         statement = self.dict_to_string(filled_data)
         self.debug_print(statement)
 
-    @can_call
-    def append_original_text(self, text):
-        return {
-            "original text": text,
-        }
-
 class DebugImageData(BaseDebug):
     CALL_STATUS = DebugState.OFF
     VERBOSE_METHODS = []
@@ -226,8 +231,3 @@ class DebugImageData(BaseDebug):
     def show_csv_text(self, joined_text):
         statement = "Data:" + joined_text
         self.debug_print(statement)
-
-class DebugState(Enum):
-    OFF = 0
-    BASIC = 1
-    VERBOSE_METHODS = 2

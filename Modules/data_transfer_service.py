@@ -10,8 +10,8 @@ from debug import DebugCore
 from debug import DebugState
 
 class DataTransferService:
-    DEBUG_STATE = True
-    PERSISTANCE_STATE = DebugState.BASIC
+    DEBUG_STATE = DebugState.BASIC
+    PERSISTANCE_STATE = False
 
     def __init__(self):
         BaseDebug().set_debug(self.DEBUG_STATE)
@@ -25,7 +25,7 @@ class DataTransferService:
             self.p.protected_t_append(image_data)
 
     def _image_file(self):
-        if DebugCore.GLOBAL_DEBUG.value > 0:
+        if DebugCore.GLOBAL_DEBUG is DebugState.OFF:
             return user_interface.prompt_user_for_location()
 
         return GlobalVariables.IMAGE_LOCATION
