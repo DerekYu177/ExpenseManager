@@ -1,11 +1,11 @@
 import csv
 import os
+from enum import Enum
 
+import data_file_helper
 from ..shared import GlobalConstants
 from ..shared import GlobalVariables
-import data_file_helper as DataFileHelper
 from ..debug import DebugPersistor as debug
-from enum import Enum
 
 debug = debug()
 
@@ -13,8 +13,8 @@ class Persistor:
     NEWLINE = "\n"
 
     def __init__(self, p_state):
-        if not DataFileHelper.does_file_exist():
-            DataFileHelper.initialize_data_file()
+        if not data_file_helper.does_file_exist():
+            data_file_helper.initialize_data_file()
 
         # TODO: Use states to fix this
         # True = 'active' = leave f open for all operations
@@ -96,7 +96,8 @@ class Persistor:
 
         debug.attempted_query(new_data.as_csv_text(), self.p_state)
 
-        text = csv.reader(self._file(f), delimiter=",")
+        openable_file = self._file(f)
+        text = csv.reader(openable_file, delimiter=",")
         text_found = self._find_by_identifier(text, identifier)
 
         debug.successful_query(new_data.as_csv_text(), self.p_state, text_found)
@@ -109,16 +110,17 @@ class Persistor:
             return Identification.IS_NONE
 
         for row in text:
+            import pdb; pdb.set_trace()
             if row[0] == identifier:
                 return Identification.EXISTS
 
         return Identification.NEW_ENTRY
 
     def _file(self, f=None):
-        if f is not None:
-            return f
-        else:
+        if not self.f.closed:
             return self.f
+        else:
+            return f
 
 class Identification(Enum):
     NEW_ENTRY = 0
