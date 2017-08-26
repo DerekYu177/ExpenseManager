@@ -52,5 +52,5 @@ class TestMethods(unittest.TestCase):
         p.append(id2)
 
         result = p.query(id2)
-        assert result is persistor.Identification.EXISTS
+        assert result == persistor.Identification.EXISTS
         p.close()

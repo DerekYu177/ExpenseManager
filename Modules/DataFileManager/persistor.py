@@ -44,9 +44,9 @@ class Persistor:
     def query(self, write_data):
         # true: the item exists
         if self.p_state:
-            self._persisted_query(write_data)
+            return self._persisted_query(write_data)
         else:
-            self._temporary_query(write_data)
+            return self._temporary_query(write_data)
 
     def turn(self, new_internal_state):
         if not self.p_state and new_internal_state:
@@ -93,6 +93,7 @@ class Persistor:
 
     def _query_with_debug(self, new_data, f=None):
         identifier = new_data.identifier()
+        self._refresh_file()
 
         debug.attempted_query(new_data.as_csv_text(), self.p_state)
 
@@ -110,7 +111,6 @@ class Persistor:
             return Identification.IS_NONE
 
         for row in text:
-            import pdb; pdb.set_trace()
             if row[0] == identifier:
                 return Identification.EXISTS
 
@@ -121,6 +121,21 @@ class Persistor:
             return self.f
         else:
             return f
+
+    def _refresh_file(self):
+        if data_file_helper.is_file_populated():
+            return
+        else:
+            self._refresh()
+
+    def _refresh(self):
+        if not self.f.closed:
+            self.f.close()
+            # flush cache
+            self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
+        else:
+            return
+
 
 class Identification(Enum):
     NEW_ENTRY = 0
