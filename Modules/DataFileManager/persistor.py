@@ -123,18 +123,14 @@ class Persistor:
             return f
 
     def _refresh_file(self):
-        if data_file_helper.is_file_populated():
+        if not self.p_state:
             return
-        else:
-            self._refresh()
+        self._refresh()
 
     def _refresh(self):
-        if not self.f.closed:
-            self.f.close()
-            # flush cache
-            self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
-        else:
-            return
+        self.f.close()
+        # flush cache
+        self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
 
 
 class Identification(Enum):
