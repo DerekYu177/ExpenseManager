@@ -21,6 +21,7 @@ class Persistor:
         # False = 'disabled' = require f to be opened for any operation
         self.p_state = p_state
         self._prepare_data_file()
+        self.last_action = LastAction.INIT
 
     def close(self):
         if self.f is None:
@@ -65,11 +66,11 @@ class Persistor:
             self.f = None
 
     def _persisted_append(self, write_data):
-        self._write_with_debug(write_data)
+        self._append_with_debug(write_data)
 
     def _temporary_append(self, write_data):
         f = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
-        self._write_with_debug(write_data, f)
+        self._append_with_debug(write_data, f)
         f.close()
 
     def _persisted_query(self, new_data):
@@ -82,26 +83,22 @@ class Persistor:
 
         return text_found
 
-    def _write_with_debug(self, write_data, f=None):
+    def _append_with_debug(self, write_data, f=None):
         debug.attempted_written_data(write_data.as_csv_text(), self.p_state)
-
         ready_data = write_data.as_csv_text() + self.NEWLINE
-
         getattr(self._file(f), "write")(ready_data)
-
         debug.successful_written_data(write_data.as_csv_text(), self.p_state)
+        self.last_action = LastAction.APPEND
 
     def _query_with_debug(self, new_data, f=None):
         identifier = new_data.identifier()
         self._refresh_file()
-
         debug.attempted_query(new_data.as_csv_text(), self.p_state)
-
         openable_file = self._file(f)
         text = csv.reader(openable_file, delimiter=",")
         text_found = self._find_by_identifier(text, identifier)
-
         debug.successful_query(new_data.as_csv_text(), self.p_state, text_found)
+        self.last_action = LastAction.QUERY
 
         return text_found
 
@@ -123,17 +120,21 @@ class Persistor:
             return f
 
     def _refresh_file(self):
-        if not self.p_state:
-            return
-        self._refresh()
+        if self.p_state and (self.last_action is LastAction.APPEND):
+            self._refresh()
+        return
 
     def _refresh(self):
         self.f.close()
         # flush cache
         self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
 
-
 class Identification(Enum):
     NEW_ENTRY = 0
     EXISTS = 1
     IS_NONE = 2
+
+class LastAction(Enum):
+    INIT = 0
+    APPEND = 1
+    QUERY = 2
