@@ -1,18 +1,16 @@
 import unittest, pytest
 import os
-from ...Modules.DataFileManager.persistor import Persistor
+from ...Modules.DataFileManager import persistor
 
 from ...Modules import shared
 from ...Modules.image_data import ImageData
-from ...Modules.DataFileManager import data_file_helper as DataFileHelper
+from ...Modules.DataFileManager import data_file_helper
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
-        global id1, id2, p
+        global id1, id2
 
-        DataFileHelper.initialize_data_file()
-
-        p = Persistor()
+        data_file_helper.initialize_data_file()
 
         id1 = ImageData({
             "date": "07/01/17",
@@ -31,10 +29,11 @@ class TestMethods(unittest.TestCase):
         })
 
     def teardown_method(self, method):
-        DataFileHelper.clear_file()
-        DataFileHelper.del_file()
+        data_file_helper.clear_file()
+        data_file_helper.del_file()
 
-    def test_persist_data(self):
+    def test_persist_data_with_persisted_state_enabled(self):
+        p = persistor.Persistor(True)
         p.append(id1)
         p.append(id2)
         p.close()
@@ -47,9 +46,34 @@ class TestMethods(unittest.TestCase):
 
         assert contents == expected
 
-    def test_does_data_exist(self):
+    def test_query_with_persisted_state_enabled(self):
+        p = persistor.Persistor(True)
+        p.append(id1)
+        p.append(id2)
+
+        result = p.query(id2)
+        assert result == persistor.Identification.EXISTS
+        p.close()
+
+    def test_persist_data_with_persisted_state_disabled(self):
+        p = persistor.Persistor(False)
         p.append(id1)
         p.append(id2)
         p.close()
 
-        assert p.does_data_exist(id2)
+        f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
+        contents = f.read()
+        f.close()
+
+        expected = "070117-20:48:14,None,$2017.21,test data\n070117-20:48:50,None,$20.17,test data\n"
+
+        assert contents == expected
+
+    def test_query_with_persisted_state_disabled(self):
+        p = persistor.Persistor(False)
+        p.append(id1)
+        p.append(id2)
+
+        result = p.query(id2)
+        assert result == persistor.Identification.EXISTS
+        p.close()

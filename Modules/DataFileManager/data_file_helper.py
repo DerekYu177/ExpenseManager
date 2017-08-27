@@ -13,8 +13,7 @@ def initialize_data_file():
     directory_exists = os.path.exists(directory)
     file_exists = os.path.exists(file_path)
 
-    if debug.LOCAL_DEBUG:
-        debug.file_and_directory(file_path, directory_exists, file_exists)
+    debug.file_and_directory(file_path, directory_exists, file_exists)
 
     if not directory_exists:
         os.makedirs(directory)
@@ -22,8 +21,7 @@ def initialize_data_file():
     if not file_exists:
         open(GlobalConstants.PERSISTED_DATA_PATH, "w+").close()
 
-    if debug.LOCAL_DEBUG:
-        debug.successful_file_and_directory_created(file_path)
+    debug.successful_file_and_directory_created(file_path)
 
 def clear_file():
     open(GlobalConstants.PERSISTED_DATA_PATH, 'w').close()
