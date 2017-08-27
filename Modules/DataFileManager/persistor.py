@@ -117,7 +117,7 @@ class Persistor:
         return Identification.NEW_ENTRY
 
     def _file(self, f=None):
-        if not self.f.closed:
+        if self.f:
             return self.f
         else:
             return f
