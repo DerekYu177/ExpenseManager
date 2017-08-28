@@ -1,7 +1,7 @@
 #!/usr/bin/python2.7
 
 # built-in classes
-from modules.data_transfer_service import DataTransferService
+from Modules.data_transfer_service import DataTransferService
 
 def main():
     servicer = DataTransferService()
