@@ -5,7 +5,7 @@ directory = os.getcwd()
 class GlobalVariables:
     RECEIPT_LOCATION = ""
 
-    IMAGE_LOCATION = '%s/Test/Images' % (directory)
+    IMAGE_LOCATION = '%s/Test/i' % (directory)
 
 class GlobalConstants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'
