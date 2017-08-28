@@ -31,6 +31,7 @@ class ImageData:
         self.attr_list = self._set_text()
         self._normalize_none()
         text = ",".join(self.attr_list)
+        # debug.show_csv_text(text)
         return text
 
     def identifier(self):
@@ -39,9 +40,9 @@ class ImageData:
     def _set_text(self):
         return [
             self._date_time(),
-            self._address(),
+            self._shorten_address(),
             self.total_amount,
-            self._description()
+            self.description
         ]
 
     def _assign_instance_variables(self):
@@ -49,31 +50,18 @@ class ImageData:
             setattr(self, attr, self.raw_data[attr])
 
     def _date_time(self):
-        if self.date is None:
-            return None
+        if self.date is None: return None
 
         date = self.date.replace("/","")
         time = self.time
 
         return "%s-%s" % (date, time)
 
-    def _description(self):
-        if self.description is None:
-            return None
+    def _shorten_address(self):
+        if self.address is None: return None
+        if len(self.address) < self.MAX_ADDRESS_LENGTH: return self.address
 
-        return self.description
-
-    def _address(self):
-        if self.address is None:
-            return None
-
-        return self._shorten(self.address)
-
-    def _shorten(self, address):
-        if len(address) < self.MAX_ADDRESS_LENGTH:
-            return address
-
-        address = address[:self.MAX_ADDRESS_LENGTH-3]
+        address = self.address[:self.MAX_ADDRESS_LENGTH-3]
         address = address + "..."
 
         return address
