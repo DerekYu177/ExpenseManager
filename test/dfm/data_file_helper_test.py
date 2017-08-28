@@ -1,7 +1,7 @@
 import unittest, pytest
 import os
 
-from ...modules.dfm import data_file_helper as DataFileHelper
+from .modules.data_file_manager import data_file_helper as DataFileHelper
 
 class TestMethods(unittest.TestCase):
     def test_create_and_destroy_file(self):

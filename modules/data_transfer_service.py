@@ -1,4 +1,4 @@
-from dfm import data_file_helper, photo_file_finder, persistor
+from data_file_manager import data_file_helper, photo_file_finder, persistor
 from pa import image_processor
 from UI import user_interface
 
