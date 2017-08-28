@@ -1,12 +1,12 @@
 import unittest
 import pytest
-from ...Modules.PhotoAnalyzer import finder
+from ...Modules.pa import image_processor
 from ...Modules.image_data import ImageData
 
 class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
-        global f
+        global its
 
         text = """
             caFE PARVIS
@@ -37,19 +37,21 @@ class TestMethods(unittest.TestCase):
             $ 291.20
             """
 
-        f = finder.Finder(text)
+        its = image_processor.ImageTextSearch(text)
+        image_processor.LOCAL_DEBUG = True
 
-    def test_find_date(self):
-        assert "07/01/2017" == f.find_date()
+    def test_analyze(self):
+        attrs = {
+            "date": "07/01/2017",
+            "time": "20:48:14",
+            "address": None,
+            "total_amount": "$2017.21",
+            "description": None,
+        }
 
-    def test_find_time(self):
-        assert "20:48:14" == f.find_time()
+        image_data = its.analyze()
 
-    def test_find_address(self):
-        assert None == f.find_address()
+        assert isinstance(image_data, ImageData)
 
-    def test_find_total_amount(self):
-        assert "$2017.21" == f.find_total_amount()
-
-    def test_description(self):
-        assert None == f.find_description()
+        for attr, attr_val in attrs.iteritems():
+            assert(attr_val == image_data.__dict__[attr])
