@@ -1,5 +1,5 @@
-from DataFileManager import data_file_helper, photo_file_finder, persistor
-from PhotoAnalyzer import image_processor
+from data_file_manager import data_file_helper, photo_file_finder, persistor
+from pa import image_processor
 from UI import user_interface
 
 from shared import *
