@@ -1,7 +1,7 @@
 import unittest
 import pytest
-from ...Modules.PhotoAnalyzer import finder
-from ...Modules.image_data import ImageData
+from ...modules.photo_analyzer import finder
+from ...modules.image_data import ImageData
 
 class TestMethods(unittest.TestCase):
     @classmethod
