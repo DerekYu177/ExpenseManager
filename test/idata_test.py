@@ -3,7 +3,6 @@ from ..m.shared import GlobalConstants
 from ..m.shared import GlobalVariables
 from ..m.image_data import ImageData
 
-
 class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
