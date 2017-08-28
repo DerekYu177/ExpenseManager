@@ -1,7 +1,7 @@
 import unittest
 import pytest
-from .modules.pa import image_processor
-from .modules.image_data import ImageData
+from ...modules.pa import image_processor
+from ...modules.image_data import ImageData
 
 class TestMethods(unittest.TestCase):
     @classmethod

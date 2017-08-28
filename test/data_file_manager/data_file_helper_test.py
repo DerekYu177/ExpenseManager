@@ -1,14 +1,14 @@
 import unittest, pytest
 import os
 
-from .modules.data_file_manager import data_file_helper as DataFileHelper
+from ...modules.data_file_manager import data_file_helper
 
 class TestMethods(unittest.TestCase):
     def test_create_and_destroy_file(self):
-        DataFileHelper.initialize_data_file()
+        data_file_helper.initialize_data_file()
 
-        assert DataFileHelper.does_file_exist() == True
+        assert data_file_helper.does_file_exist() == True
 
-        DataFileHelper.clear_file()
+        data_file_helper.clear_file()
 
-        assert DataFileHelper.is_file_empty() == True
+        assert data_file_helper.is_file_empty() == True
