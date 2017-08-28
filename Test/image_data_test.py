@@ -1,7 +1,7 @@
 import unittest, pytest
-from ..Modules.shared import GlobalConstants
-from ..Modules.shared import GlobalVariables
-from ..Modules.image_data import ImageData
+from ..m.shared import GlobalConstants
+from ..m.shared import GlobalVariables
+from ..m.image_data import ImageData
 
 
 class TestMethods(unittest.TestCase):

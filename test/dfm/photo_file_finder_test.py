@@ -1,8 +1,8 @@
 import unittest
 import pytest
 
-from ... Modules.dfm import photo_file_finder
-from ...Modules.shared import GlobalVariables
+from ... m.dfm import photo_file_finder
+from ...m.shared import GlobalVariables
 
 class TestMethods(unittest.TestCase):
     def test_find_photos_when_glb_var_not_instantiated_raises_error(self):

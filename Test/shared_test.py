@@ -1,6 +1,6 @@
 import unittest
 import pytest
-from ..Modules import shared as shared
+from ..m import shared as shared
 
 class TestMethods(unittest.TestCase):
     def test_global_variables(self):
