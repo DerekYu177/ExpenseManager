@@ -1,10 +1,10 @@
 import unittest, pytest
 import os
-from ...m.dfm import persistor
+from ...modules.dfm import persistor
 
-from ...m import shared
-from ...m.image_data import ImageData
-from ...m.dfm import data_file_helper
+from ...modules import shared
+from ...modules.image_data import ImageData
+from ...modules.dfm import data_file_helper
 
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
