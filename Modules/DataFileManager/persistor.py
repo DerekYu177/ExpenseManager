@@ -16,9 +16,7 @@ class Persistor:
         if not data_file_helper.does_file_exist():
             data_file_helper.initialize_data_file()
 
-        # TODO: Use states to fix this
-        # True = 'active' = leave f open for all operations
-        # False = 'disabled' = require f to be opened for any operation
+        # True = leave f open for all operations
         self.p_state = p_state
         self._prepare_data_file()
         self.last_action = LastAction.INIT
