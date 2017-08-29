@@ -47,6 +47,8 @@ class ImageData(object):
                 self.attr_list[pos] = str(None)
 
 class Builder(ImageData):
+    SUBSTITUTE = "HIT"
+
     def __init__(self, data):
         for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
             setattr(self, attr, data[attr])
@@ -59,7 +61,7 @@ class Builder(ImageData):
             result = function()
 
             if self._required(value) and result is None:
-                result = "HIT"
+                result = self.SUBSTITUTE
 
             results.append(result)
 
@@ -93,6 +95,9 @@ class Builder(ImageData):
         return self.description
 
     def _required(self, value):
+        if ImageDataBuilder.PRECISION is BuilderRequirements.REQUIRES_COMPLETE:
+            return True
+
         return value == ImageDataBuilder.PRECISION.value
 
     def _privatize(self, method_name):
