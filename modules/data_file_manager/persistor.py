@@ -27,7 +27,7 @@ class Persistor:
 
         self.f.close()
 
-    def protected_t_append(self, write_data):
+    def protected_append(self, write_data):
         state = self._temporary_query(write_data)
         if (state is Identification.EXISTS) or (state is Identification.IS_NONE):
             return

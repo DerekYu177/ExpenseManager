@@ -1,11 +1,13 @@
+from enum import Enum
+
 from shared import ImageDataCore
+from shared import ImageDataBuilder
+from shared import BuilderRequirements
 from debug import DebugImageData as debug
 debug = debug()
 
-class ImageData:
-
+class ImageData(object):
     MAX_ADDRESS_LENGTH = 10
-    LOCAL_DEBUG = False
 
     def __init__(self, data):
 
@@ -18,7 +20,7 @@ class ImageData:
         # }
 
         self.raw_data = data
-        self._assign_instance_variables()
+        self.attr_list = Builder(self.raw_data).process()
 
     def is_valid(self):
         for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
@@ -28,25 +30,40 @@ class ImageData:
         return True
 
     def as_csv_text(self):
-        self.attr_list = self._set_text()
         self._normalize_none()
         text = ",".join(self.attr_list)
         return text
 
     def identifier(self):
-        return self._date_time()
-
-    def _set_text(self):
-        return [
-            self._date_time(),
-            self._address(),
-            self.total_amount,
-            self._description()
-        ]
+        return self.attr_list[0]
 
     def _assign_instance_variables(self):
         for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
             setattr(self, attr, self.raw_data[attr])
+
+    def _normalize_none(self):
+        for pos, attr in enumerate(self.attr_list):
+            if attr is None:
+                self.attr_list[pos] = str(None)
+
+class Builder(ImageData):
+    def __init__(self, data):
+        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
+            setattr(self, attr, data[attr])
+
+    def process(self):
+        results = []
+
+        for attribute_name, value in ImageDataBuilder.BUILDER_ATTRIBUTES.items():
+            function = getattr(self, self._privatize(attribute_name))
+            result = function()
+
+            if self._required(value) and result is None:
+                result = "HIT"
+
+            results.append(result)
+
+        return results
 
     def _date_time(self):
         if self.date is None:
@@ -57,19 +74,31 @@ class ImageData:
 
         return "%s-%s" % (date, time)
 
+    def _address(self):
+        if self.address is None:
+            return None
+
+        return self._shorten_addr(self.address)
+
+    def _total_amount(self):
+        if self.total_amount is None:
+            return None
+
+        return self.total_amount
+
     def _description(self):
         if self.description is None:
             return None
 
         return self.description
 
-    def _address(self):
-        if self.address is None:
-            return None
+    def _required(self, value):
+        return value == ImageDataBuilder.PRECISION.value
 
-        return self._shorten(self.address)
+    def _privatize(self, method_name):
+        return "_" + method_name
 
-    def _shorten(self, address):
+    def _shorten_addr(self, address):
         if len(address) < self.MAX_ADDRESS_LENGTH:
             return address
 
@@ -77,8 +106,3 @@ class ImageData:
         address = address + "..."
 
         return address
-
-    def _normalize_none(self):
-        for pos, attr in enumerate(self.attr_list):
-            if attr is None:
-                self.attr_list[pos] = str(None)

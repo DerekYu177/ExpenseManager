@@ -1,5 +1,7 @@
-from data_file_manager import data_file_helper, photo_file_finder, persistor
-from pa import image_processor
+from data_file_manager import data_file_helper
+from data_file_manager import photo_file_finder
+from data_file_manager import persistor
+from photo_analyzer import image_processor
 from UI import user_interface
 
 from shared import *
@@ -22,7 +24,7 @@ class DataTransferService:
     def begin(self):
         for photo_name in self.photos_names:
             image_data = image_processor.image_data_from_image(photo_name)
-            self.p.protected_t_append(image_data)
+            self.p.protected_append(image_data)
 
     def _image_file(self):
         if DebugCore.GLOBAL_DEBUG is DebugState.OFF:
