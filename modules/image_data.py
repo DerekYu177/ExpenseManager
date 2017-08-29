@@ -9,7 +9,7 @@ debug = debug()
 class ImageData(object):
     MAX_ADDRESS_LENGTH = 10
 
-    def __init__(self, data):
+    def __init__(self, data, image_name):
 
         # data = {
         #     "date": data["date"],
@@ -45,6 +45,9 @@ class ImageData(object):
         for pos, attr in enumerate(self.attr_list):
             if attr is None:
                 self.attr_list[pos] = str(None)
+
+    def _query_user(self):
+        QueryForAdditionalDetails().query()
 
 class Builder(ImageData):
     SUBSTITUTE = "HIT"
@@ -111,3 +114,11 @@ class Builder(ImageData):
         address = address + "..."
 
         return address
+
+class QueryForAdditionalDetails:
+    def __init__(self, attribute, photo_name):
+        self.attribute = attribute
+        self.photo_name = photo_name
+
+    def query(self):
+        pass

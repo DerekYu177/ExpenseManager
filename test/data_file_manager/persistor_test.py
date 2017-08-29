@@ -11,6 +11,7 @@ class TestMethods(unittest.TestCase):
         global id1, id2
 
         data_file_helper.initialize_data_file()
+        image_name = "dank_memes.jpg"
 
         id1 = ImageData({
             "date": "07/01/17",
@@ -18,7 +19,7 @@ class TestMethods(unittest.TestCase):
             "address": "None",
             "total_amount": "$2017.21",
             "description": "test data"
-        })
+        }, image_name)
 
         id2 = ImageData({
             "date": "07/01/17",
@@ -26,7 +27,7 @@ class TestMethods(unittest.TestCase):
             "address": "None",
             "total_amount": "$20.17",
             "description": "test data"
-        })
+        }, image_name)
 
     def teardown_method(self, method):
         data_file_helper.clear_file()

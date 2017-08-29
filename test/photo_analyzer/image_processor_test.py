@@ -36,8 +36,9 @@ class TestMethods(unittest.TestCase):
 
             $ 291.20
             """
+        image_name = "fank_meme.jpg"
 
-        its = image_processor.ImageTextSearch(text)
+        its = image_processor.ImageTextSearch(text, image_name)
 
     def test_analyze(self):
         csv_text = "07012017-20:48:14,None,$2017.21,None"
