@@ -19,6 +19,7 @@ class ImageData(object):
         #     "description": data["description"]
         # }
 
+        self.image_name = image_name
         self.raw_data = data
         self.attr_list = Builder(self.raw_data).process()
 
@@ -46,8 +47,8 @@ class ImageData(object):
             if attr is None:
                 self.attr_list[pos] = str(None)
 
-    def _query_user(self):
-        QueryForAdditionalDetails().query()
+    def _query(self, query_attribute):
+        QueryForAdditionalDetails(self, query_attribute).query()
 
 class Builder(ImageData):
     SUBSTITUTE = "HIT"
@@ -57,18 +58,24 @@ class Builder(ImageData):
             setattr(self, attr, data[attr])
 
     def process(self):
-        results = []
+        self._build_using_builder_attributes()
+        self._query_for_required_values()
+
+        return self.build_results
+
+    def _build_using_builder_attributes(self):
+        self.build_results = []
 
         for attribute_name, value in ImageDataBuilder.BUILDER_ATTRIBUTES.items():
             function = getattr(self, self._privatize(attribute_name))
-            result = function()
+            self.build_results.append(function())
 
-            if self._required(value) and result is None:
-                result = self.SUBSTITUTE
+    def _query_for_required_values(self):
+        for index, attribute_name in enumerate(ImageDataBuilder.BUILDER_ATTRIBUTES):
+            value = ImageDataBuilder.BUILDER_ATTRIBUTES[attribute_name]
 
-            results.append(result)
-
-        return results
+            if self._required(value) and self.build_results[index] is None:
+                self.build_results[index] = self.SUBSTITUTE
 
     def _date_time(self):
         if self.date is None:
@@ -114,11 +121,3 @@ class Builder(ImageData):
         address = address + "..."
 
         return address
-
-class QueryForAdditionalDetails:
-    def __init__(self, attribute, photo_name):
-        self.attribute = attribute
-        self.photo_name = photo_name
-
-    def query(self):
-        pass
