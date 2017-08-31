@@ -1,18 +1,7 @@
 #!/usr/bin/python2.7
 
-# for file prompt
-import Tkinter as tk
-from tkFileDialog import askdirectory
-
 # for displaying images
 from PIL import ImageTk, Image
-
-def prompt_user_for_location():
-    # exists outside of class
-    tk_prompt = tk.Tk()
-
-    tk_prompt.withdraw()
-    return askdirectory()
 
 class UserInterface:
 

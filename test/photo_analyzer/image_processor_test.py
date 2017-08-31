@@ -36,22 +36,12 @@ class TestMethods(unittest.TestCase):
 
             $ 291.20
             """
+        image_name = "fank_meme.jpg"
 
-        its = image_processor.ImageTextSearch(text)
-        image_processor.LOCAL_DEBUG = True
+        its = image_processor.ImageTextSearch(text, image_name)
 
     def test_analyze(self):
-        attrs = {
-            "date": "07/01/2017",
-            "time": "20:48:14",
-            "address": None,
-            "total_amount": "$2017.21",
-            "description": None,
-        }
-
+        csv_text = "07012017-20:48:14,None,$2017.21,None"
         image_data = its.analyze()
-
         assert isinstance(image_data, ImageData)
-
-        for attr, attr_val in attrs.iteritems():
-            assert(attr_val == image_data.__dict__[attr])
+        assert csv_text, image_data.as_csv_text()

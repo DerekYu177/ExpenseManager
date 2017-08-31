@@ -23,11 +23,12 @@ def image_data_from_image(image):
         img.open(image_location)
     )
 
-    return ImageTextSearch(text).analyze()
+    return ImageTextSearch(text, image).analyze()
 
 class ImageTextSearch:
-    def __init__(self, original_text):
+    def __init__(self, original_text, image_name):
         self.original_text = original_text
+        self.image_name = image_name
         self.core_data = dict.fromkeys(ImageDataCore.ANALYSIS_ATTRIBUTES, None)
         self._populate_core_data()
 
@@ -35,7 +36,7 @@ class ImageTextSearch:
         debug.text_and_relevant_text(self.original_text, self.core_data)
         self.core_data.update(debug.append_original_text(self.core_data))
 
-        return ImageData(self.core_data)
+        return ImageData(self.core_data, self.image_name)
 
     def _populate_core_data(self):
         f = Finder(self.original_text)
