@@ -1,9 +1,8 @@
-from enum import Enum
-
 from shared import ImageDataCore
 from shared import ImageDataBuilder
 from shared import BuilderRequirements
 from debug import DebugImageData as debug
+from CLI import QueryForAdditionalDetails
 debug = debug()
 
 class ImageData(object):
@@ -21,7 +20,7 @@ class ImageData(object):
 
         self.image_name = image_name
         self.raw_data = data
-        self.attr_list = Builder(self.raw_data).process()
+        self.attr_list = Builder(self.raw_data, self.image_name).process()
 
     def is_valid(self):
         for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
@@ -48,24 +47,23 @@ class ImageData(object):
                 self.attr_list[pos] = str(None)
 
     def _query(self, query_attribute):
-        QueryForAdditionalDetails(self, query_attribute).query()
+        return QueryForAdditionalDetails(self, query_attribute, self.image_name).query()
 
 class Builder(ImageData):
-    SUBSTITUTE = "HIT"
-
-    def __init__(self, data):
+    def __init__(self, data, image_name):
+        self.image_name = image_name
         for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
             setattr(self, attr, data[attr])
 
     def process(self):
+        self.build_results = []
+
         self._build_using_builder_attributes()
         self._query_for_required_values()
 
         return self.build_results
 
     def _build_using_builder_attributes(self):
-        self.build_results = []
-
         for attribute_name, value in ImageDataBuilder.BUILDER_ATTRIBUTES.items():
             function = getattr(self, self._privatize(attribute_name))
             self.build_results.append(function())
@@ -75,7 +73,7 @@ class Builder(ImageData):
             value = ImageDataBuilder.BUILDER_ATTRIBUTES[attribute_name]
 
             if self._required(value) and self.build_results[index] is None:
-                self.build_results[index] = self.SUBSTITUTE
+                self.build_results[index] = self._query(attribute_name)
 
     def _date_time(self):
         if self.date is None:
