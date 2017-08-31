@@ -2,7 +2,7 @@ from data_file_manager import data_file_helper
 from data_file_manager import photo_file_finder
 from data_file_manager import persistor
 from photo_analyzer import image_processor
-from UI import user_interface
+import prompter
 
 from shared import *
 from image_data import ImageData
@@ -28,6 +28,6 @@ class DataTransferService:
 
     def _image_file(self):
         if DebugCore.GLOBAL_DEBUG is DebugState.OFF:
-            return user_interface.prompt_user_for_location()
+            return prompter.prompt_user_for_location()
 
         return GlobalVariables.IMAGE_LOCATION
