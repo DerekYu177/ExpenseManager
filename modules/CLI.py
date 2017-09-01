@@ -3,7 +3,7 @@ from debug import DebugCore
 from debug import DebugState
 
 class Query(object):
-    DEFAULT_MESSAGE = "dank inputs"
+    DEFAULT_MESSAGE = "BLANK"
 
     def query_user(self, query_message):
         if DebugCore.GLOBAL_DEBUG is DebugState.OFF:
@@ -16,6 +16,7 @@ class QueryForAdditionalDetails(Query):
         "address": "Do you remember the address for this purchase?",
         "description": "Add a description to your purchase"
     }
+    RUDE_QUERY = "Just do the thing"
 
     def __init__(self, image_data, query_attribute, image_name):
         self.image_name = image_name
@@ -25,15 +26,21 @@ class QueryForAdditionalDetails(Query):
     def query(self):
         return self.query_user(
             self._query_message() +
-            self.CUSTOM_QUERY[self.query_attribute]
+            self._custom_query_message()
         )
+
+    def _custom_query_message(self):
+        if self.query_attribute in self.CUSTOM_QUERY.keys():
+            return self.CUSTOM_QUERY[self.query_attribute]
+        else:
+            return self.RUDE_QUERY
 
     def _query_message(self):
         return """We were unable to determine the %s from the image %s.
         On the date %s, at %s, you spent %s.""" % (
             self.query_attribute,
             self.image_name,
-            self.image_data.date,
-            self.image_data.time,
-            self.image_data.total_amount
+            self.image_data.date or self.DEFAULT_MESSAGE,
+            self.image_data.time or self.DEFAULT_MESSAGE,
+            self.image_data.total_amount or self.DEFAULT_MESSAGE
         )
