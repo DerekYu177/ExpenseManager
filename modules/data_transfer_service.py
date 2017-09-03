@@ -4,7 +4,9 @@ from data_file_manager import persistor
 from photo_analyzer import image_processor
 import prompter
 
-from shared import *
+from shared import ImageDataBuilder
+from shared import BuilderRequirements
+from shared import GlobalVariables
 from image_data import ImageData
 
 from debug import BaseDebug
@@ -14,6 +16,7 @@ from debug import DebugState
 class DataTransferService:
     DEBUG_STATE = DebugState.BASIC
     PERSISTANCE_STATE = False
+    ImageDataBuilder.PRECISION = BuilderRequirements.AS_IS
 
     def __init__(self):
         BaseDebug().set_debug(self.DEBUG_STATE)

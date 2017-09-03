@@ -33,7 +33,7 @@ class DebugCore:
     GLOBAL_DEBUG = DebugState.OFF
     DEBUG_COUNTER = 0
     MAX_MESSAGE_LENGTH = 100
-    VERBOSE_METHODS = True
+    VERBOSE_METHODS = True # FIXME
     NEWLINE = "\n"
 
 class BaseDebug:
@@ -54,11 +54,11 @@ class BaseDebug:
     def debug_print(self, text):
         text = self.text_truncate(text)
         print "%s: %s" % (DebugCore.DEBUG_COUNTER, text)
-        # add condition where there is a new line involved
+        # FIXME add condition where there is a new line involved
         DebugCore.DEBUG_COUNTER = DebugCore.DEBUG_COUNTER + 1
 
     def text_truncate(self, text):
-        if DebugCore.VERBOSE_METHODS or len(text) < DebugCore.MAX_MESSAGE_LENGTH:
+        if DebugCore.VERBOSE_METHODS or len(text) < DebugCore.MAX_MESSAGE_LENGTH: # FIXME
             return text
 
         text = text[:DebugCore.MAX_MESSAGE_LENGTH-3]

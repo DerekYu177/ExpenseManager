@@ -29,7 +29,7 @@ class ImageData(object):
 
         return True
 
-    def as_csv_text(self):
+    def __str__(self):
         self._normalize_none()
         text = ",".join(self.attr_list)
         return text

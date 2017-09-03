@@ -44,4 +44,4 @@ class TestMethods(unittest.TestCase):
         csv_text = "07012017-20:48:14,None,$2017.21,None"
         image_data = its.analyze()
         assert isinstance(image_data, ImageData)
-        assert csv_text, image_data.as_csv_text()
+        assert csv_text, str(image_data)

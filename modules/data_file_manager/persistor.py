@@ -82,20 +82,20 @@ class Persistor:
         return text_found
 
     def _append_with_debug(self, write_data, f=None):
-        debug.attempted_written_data(write_data.as_csv_text(), self.p_state)
-        ready_data = write_data.as_csv_text() + self.NEWLINE
+        debug.attempted_written_data(str(write_data), self.p_state)
+        ready_data = str(write_data) + self.NEWLINE
         getattr(self._file(f), "write")(ready_data)
-        debug.successful_written_data(write_data.as_csv_text(), self.p_state)
+        debug.successful_written_data(str(write_data), self.p_state)
         self.last_action = LastAction.APPEND
 
     def _query_with_debug(self, new_data, f=None):
         identifier = new_data.identifier()
         self._refresh_file()
-        debug.attempted_query(new_data.as_csv_text(), self.p_state)
+        debug.attempted_query(str(new_data), self.p_state)
         openable_file = self._file(f)
         text = csv.reader(openable_file, delimiter=",")
         text_found = self._find_by_identifier(text, identifier)
-        debug.successful_query(new_data.as_csv_text(), self.p_state, text_found)
+        debug.successful_query(str(new_data), self.p_state, text_found)
         self.last_action = LastAction.QUERY
 
         return text_found
