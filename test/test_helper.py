@@ -1,9 +1,5 @@
 from ..modules import shared
 
-# @classmethod
-# def setup_class(cls):
-#     test_helper.prepare()
-
 class TestHelper(object):
     @classmethod
     def setup_class(cls):
