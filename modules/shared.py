@@ -1,6 +1,8 @@
 from enum import Enum
 import os
 
+import CLI
+
 directory = os.getcwd()
 
 class State(Enum):
@@ -28,11 +30,12 @@ class GlobalVariables: # FIXME: These can become module variables
     STATE = State.DEBUG_BASIC
     PRECISION = BuilderRequirements.AS_IS
 
-class Setter:
+class Setter(CLI.Printer):
     # TODO: the rest of the setters for access to key variables
 
     def set_state(self, new_state):
         if not new_state in State:
             return
 
+        self.show("SETTER", "Set State: %s" % new_state.name)
         GlobalVariables.STATE = new_state
