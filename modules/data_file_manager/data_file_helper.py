@@ -7,7 +7,7 @@ from ..debug import DebugDataFileHelper as debug
 debug = debug()
 
 def initialize_data_file():
-    file_path = GlobalConstants.PERSISTED_DATA_PATH
+    file_path = GlobalVariables.DATA_PATH
     directory = os.path.dirname(file_path)
 
     directory_exists = os.path.exists(directory)
@@ -19,18 +19,18 @@ def initialize_data_file():
         os.makedirs(directory)
 
     if not file_exists:
-        open(GlobalConstants.PERSISTED_DATA_PATH, "w+").close()
+        open(GlobalVariables.DATA_PATH, "w+").close()
 
     debug.successful_file_and_directory_created(file_path)
 
 def clear_file():
-    open(GlobalConstants.PERSISTED_DATA_PATH, 'w').close()
+    open(GlobalVariables.DATA_PATH, 'w').close()
 
 def del_file():
-    os.remove(GlobalConstants.PERSISTED_DATA_PATH)
+    os.remove(GlobalVariables.DATA_PATH)
 
 def does_file_exist():
-    return os.path.isfile(GlobalConstants.PERSISTED_DATA_PATH)
+    return os.path.isfile(GlobalVariables.DATA_PATH)
 
 def is_file_populated():
     return does_file_exist() and _file_size() > 0
@@ -39,4 +39,4 @@ def is_file_empty():
     return _file_size() == 0
 
 def _file_size():
-    return os.stat(GlobalConstants.PERSISTED_DATA_PATH).st_size
+    return os.stat(GlobalVariables.DATA_PATH).st_size

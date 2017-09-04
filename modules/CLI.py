@@ -1,12 +1,10 @@
-# from image_data import ImageData
-from shared import State
-from shared import GlobalVariables
+import shared
 
 class Query(object):
     DEFAULT_MESSAGE = None
 
     def query_user(self, query_message):
-        if GlobalVariables.STATE is State.NOMINAL:
+        if shared.GlobalVariables.STATE is shared.State.NOMINAL:
             return raw_input(query_message)
         else:
             return self.DEFAULT_MESSAGE

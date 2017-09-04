@@ -21,6 +21,11 @@ class GlobalConstants:
     PERSISTED_DATA_PATH = '%s/data/%s' % (directory, PERSISTED_DATA)
     TEST_PERSISTED_DATA_PATH = '%s/data/test_%s' % (directory, PERSISTED_DATA)
 
+class GlobalVariables:
+    RECEIPT_LOCATION = ""
+    IMAGE_LOCATION = '%s/test/images' % (directory)
+    DATA_PATH = GlobalConstants.PERSISTED_DATA_PATH
+
 class BuilderRequirements(Enum):
     AS_IS = 0
     REQUIRES_ADDRESS = 1

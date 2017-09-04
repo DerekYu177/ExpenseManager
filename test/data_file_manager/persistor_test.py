@@ -1,17 +1,13 @@
 import unittest, pytest
 import os
 from ...modules.data_file_manager import persistor
-from . import test_helper
+from .. import test_helper
 
 from ...modules import shared
 from ...modules.image_data import ImageData
 from ...modules.data_file_manager import data_file_helper
 
-class TestMethods(unittest.TestCase):
-    @classmethod
-    def setup_class(cls):
-        test_helper.prepare()
-
+class TestMethods(unittest.TestCase, test_helper.TestHelper):
     def setup_method(self, method):
         global id1, id2
         data_file_helper.initialize_data_file()
@@ -43,7 +39,7 @@ class TestMethods(unittest.TestCase):
         p.append(id2)
         p.close()
 
-        f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
+        f = open(shared.GlobalVariables.DATA_PATH, "r")
         contents = f.read()
         f.close()
 
@@ -66,7 +62,7 @@ class TestMethods(unittest.TestCase):
         p.append(id2)
         p.close()
 
-        f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
+        f = open(shared.GlobalVariables.DATA_PATH, "r")
         contents = f.read()
         f.close()
 
