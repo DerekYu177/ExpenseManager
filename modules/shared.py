@@ -21,7 +21,7 @@ class GlobalConstants:
     PERSISTED_DATA_PATH = '%s/data/%s' % (directory, PERSISTED_DATA)
     TEST_PERSISTED_DATA_PATH = '%s/data/test_%s' % (directory, PERSISTED_DATA)
 
-class GlobalVariables:
+class GlobalVariables: # FIXME: These can become module variables
     RECEIPT_LOCATION = ""
     IMAGE_LOCATION = '%s/test/images' % (directory)
     DATA_PATH = GlobalConstants.PERSISTED_DATA_PATH
@@ -29,6 +29,8 @@ class GlobalVariables:
     PRECISION = BuilderRequirements.AS_IS
 
 class Setter:
+    # TODO: the rest of the setters for access to key variables
+
     def set_state(self, new_state):
         if not new_state in State:
             return

@@ -1,6 +1,6 @@
 import re
 
-class Finder(object): # new class structure here
+class Finder(object):
     def __init__(self, text):
         self.text = text
 

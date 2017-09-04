@@ -1,5 +1,7 @@
 import shared
 
+# TODO: print access to the console should be the responsibility of the interface
+
 class Query(object):
     DEFAULT_MESSAGE = None
 
