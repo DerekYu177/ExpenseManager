@@ -10,11 +10,6 @@ class State(Enum):
     DEBUG_VERBOSE = 2
     TEST = 3
 
-class GlobalVariables:
-    RECEIPT_LOCATION = ""
-    IMAGE_LOCATION = '%s/test/images' % (directory)
-    STATE = State.NOMINAL
-
 class GlobalConstants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'
     PERSISTED_DATA = 'persisted_data.csv'
@@ -25,6 +20,7 @@ class GlobalVariables:
     RECEIPT_LOCATION = ""
     IMAGE_LOCATION = '%s/test/images' % (directory)
     DATA_PATH = GlobalConstants.PERSISTED_DATA_PATH
+    STATE = State.DEBUG_BASIC
 
 class BuilderRequirements(Enum):
     AS_IS = 0

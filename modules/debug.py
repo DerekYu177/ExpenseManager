@@ -15,7 +15,7 @@ def can_call(func):
             return
         elif (global_state is State.TEST):
             return
-        elif (global_state is State.DEBUG_BASIC):
+        elif (global_state is State.DEBUG_BASIC) and not _is_verbose(func, klass):
             return func(*args)
         elif (global_state is State.DEBUG_VERBOSE) and _is_verbose(func, klass):
             return func(*args)
