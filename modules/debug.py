@@ -4,17 +4,20 @@ from functools import wraps
 from shared import GlobalVariables
 from shared import GlobalConstants
 from shared import ImageDataCore
+from shared import State
 
 def can_call(func):
     @wraps(func)
     def respond_depending_on_state(*args):
         klass = args[0]
         state = klass.CALL_STATUS
-        if (state is DebugState.BASIC) and not _is_verbose(func, klass):
+        global_state = GlobalVariables.STATE
+        if (global_state is State.NOMINAL) or (global_state is State.TEST):
+            return
+        elif (global_state is State.DEBUG_BASIC):
             return func(*args)
-        elif (state is DebugState.VERBOSE):
+        elif _is_verbose(func, klass):
             return func(*args)
-        return
 
     return respond_depending_on_state
 
@@ -24,20 +27,14 @@ def _is_verbose(function, klass):
     else:
         return False
 
-class DebugState(Enum):
-    OFF = 0
-    BASIC = 1
-    VERBOSE = 2
-
 class DebugCore:
-    GLOBAL_DEBUG = DebugState.OFF
     DEBUG_COUNTER = 0
     MAX_MESSAGE_LENGTH = 100
     VERBOSE_METHODS = True # FIXME
     NEWLINE = "\n"
 
 class BaseDebug:
-    def set_debug(self, debug_flag=DebugState.OFF):
+    def set_debug(self, debug_flag=State.NOMINAL):
         self.debug_print("Set GLOBAL_DEBUG: %s" % debug_flag.name)
         DebugCore.GLOBAL_DEBUG = debug_flag
         DebugDataFileHelper.CALL_STATUS = debug_flag
@@ -93,7 +90,7 @@ class BaseDebug:
         return statement
 
 class DebugService(BaseDebug): #TODO
-    CALL_STATUS = DebugState.OFF
+    CALL_STATUS = State.NOMINAL
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -103,7 +100,7 @@ class DebugService(BaseDebug): #TODO
         pass
 
 class DebugDataFileHelper(BaseDebug):
-    CALL_STATUS = DebugState.OFF
+    CALL_STATUS = State.NOMINAL
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -121,7 +118,7 @@ class DebugDataFileHelper(BaseDebug):
         self.debug_print("File/Dir Created: (success) at %s" % (file_path))
 
 class DebugPersistor(BaseDebug):
-    CALL_STATUS = DebugState.OFF
+    CALL_STATUS = State.NOMINAL
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -157,7 +154,7 @@ class DebugPersistor(BaseDebug):
         return result.name
 
 class DebugPhotoFileFinder(BaseDebug):
-    CALL_STATUS = DebugState.OFF
+    CALL_STATUS = State.NOMINAL
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -170,7 +167,7 @@ class DebugPhotoFileFinder(BaseDebug):
         self.debug_print(statement)
 
 class DebugImageProcessor(BaseDebug):
-    CALL_STATUS = DebugState.OFF
+    CALL_STATUS = State.NOMINAL
     VERBOSE_METHODS = [
         "text_and_relevant_text"
     ]
@@ -217,7 +214,7 @@ class DebugImageProcessor(BaseDebug):
         self.debug_print(statement)
 
 class DebugImageData(BaseDebug):
-    CALL_STATUS = DebugState.OFF
+    CALL_STATUS = State.NOMINAL
     VERBOSE_METHODS = []
 
     def __init__(self):

@@ -2,7 +2,6 @@ import unittest, pytest
 import os
 from ...modules.data_file_manager import persistor
 
-from ...modules import debug
 from ...modules import shared
 from ...modules.image_data import ImageData
 from ...modules.data_file_manager import data_file_helper
@@ -81,7 +80,7 @@ class TestMethods(unittest.TestCase):
         p.close()
 
     def test_protected_append_with_all_none_does_not_write_to_file(self):
-        debug.DebugCore.GLOBAL_DEBUG = debug.DebugState.BASIC
+        shared.GlobalVariables.STATE = shared.State.DEBUG_BASIC
         p = persistor.Persistor(False)
         none_image_data = ImageData({
             "date": None,

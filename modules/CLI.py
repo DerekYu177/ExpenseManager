@@ -1,12 +1,12 @@
 # from image_data import ImageData
-from debug import DebugCore
-from debug import DebugState
+from shared import State
+from shared import GlobalVariables
 
 class Query(object):
     DEFAULT_MESSAGE = None
 
     def query_user(self, query_message):
-        if DebugCore.GLOBAL_DEBUG is DebugState.OFF:
+        if GlobalVariables.STATE is State.NOMINAL:
             return raw_input(query_message)
         else:
             return self.DEFAULT_MESSAGE
