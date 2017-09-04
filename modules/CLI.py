@@ -10,7 +10,6 @@ class Printer:
     def show(self, source, message):
         message = self.message_truncate(message)
         print "%s:(%s):%s" % (PrintCore.MESSAGE_COUNTER, source, message)
-        # FIXME add condition where there is a new line involved
         PrintCore.MESSAGE_COUNTER = PrintCore.MESSAGE_COUNTER + 1
 
     def message_truncate(self, text):
@@ -56,6 +55,17 @@ class Query(object):
             return raw_input(query_message)
         else:
             return self.DEFAULT_MESSAGE
+
+    def location(self):
+        import Tkinter as tk
+        from tkFileDialog import askdirectory
+
+        if shared.GlobalVariables.STATE is shared.State.NOMINAL:
+            tk_prompt = tk.Tk()
+            tk_prompt.withdraw()
+            return askdirectory()
+        else:
+            return shared.GlobalVariables.IMAGE_LOCATION
 
 class QueryForAdditionalDetails(Query):
     CUSTOM_QUERY = {
