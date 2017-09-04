@@ -2,6 +2,7 @@ import unittest, pytest
 import os
 from ...modules.data_file_manager import persistor
 
+from ...modules import debug
 from ...modules import shared
 from ...modules.image_data import ImageData
 from ...modules.data_file_manager import data_file_helper
@@ -9,7 +10,7 @@ from ...modules.data_file_manager import data_file_helper
 class TestMethods(unittest.TestCase):
     def setup_method(self, method):
         global id1, id2
-
+        shared.GlobalConstants.PERSISTED_DATA_PATH = shared.GlobalConstants.TEST_PERSISTED_DATA_PATH
         data_file_helper.initialize_data_file()
         image_name = "dank_memes.jpg"
 
@@ -78,3 +79,16 @@ class TestMethods(unittest.TestCase):
         result = p.query(id2)
         assert result == persistor.Identification.EXISTS
         p.close()
+
+    def test_protected_append_with_all_none_does_not_write_to_file(self):
+        debug.DebugCore.GLOBAL_DEBUG = debug.DebugState.BASIC
+        p = persistor.Persistor(False)
+        none_image_data = ImageData({
+            "date": None,
+            "time": None,
+            "address": None,
+            "total_amount": None,
+            "description": None
+        }, "ALL NONE")
+        p.protected_append(none_image_data)
+        assert data_file_helper.is_file_empty()

@@ -3,7 +3,7 @@ from debug import DebugCore
 from debug import DebugState
 
 class Query(object):
-    DEFAULT_MESSAGE = "BLANK"
+    DEFAULT_MESSAGE = None
 
     def query_user(self, query_message):
         if DebugCore.GLOBAL_DEBUG is DebugState.OFF:

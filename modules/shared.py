@@ -11,7 +11,8 @@ class GlobalVariables:
 class GlobalConstants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'
     PERSISTED_DATA = 'persisted_data.csv'
-    PERSISTED_DATA_PATH = '%s/Data/%s' % (directory, PERSISTED_DATA)
+    PERSISTED_DATA_PATH = '%s/data/%s' % (directory, PERSISTED_DATA)
+    TEST_PERSISTED_DATA_PATH = '%s/data/test_%s' % (directory, PERSISTED_DATA)
 
 class BuilderRequirements(Enum):
     AS_IS = 0
