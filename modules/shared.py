@@ -55,3 +55,10 @@ class ImageDataBuilder:
         ("total_amount", 0),
         ("description", 2)
     ])
+
+class Setter:
+    def set_state(self, new_state):
+        if not new_state in State:
+            return
+
+        GlobalVariables.STATE = new_state
