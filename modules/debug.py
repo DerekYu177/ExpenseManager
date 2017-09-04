@@ -3,7 +3,6 @@ from functools import wraps
 
 from shared import GlobalVariables
 from shared import GlobalConstants
-from shared import ImageDataCore
 from shared import State
 
 def can_call(func):
@@ -190,16 +189,6 @@ class DebugImageProcessor(BaseDebug):
 
         statement_2 = "Relevant text:" + self.dict_to_string(relevant_text) + DebugCore.NEWLINE
         self.debug_print(statement_2)
-
-    @can_call
-    def all_set_attributes(self, obj):
-        statement = "Retriving attributes:"
-
-        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
-            message = "Get %s: %s" % (attr, obj.__dict__[attr])
-            statement = statement + self.text_tab(message, 1)
-
-        self.debug_print(statement)
 
     @can_call
     def show_full_data(self, filled_data):

@@ -1,9 +1,30 @@
-from shared import ImageDataCore
-from shared import ImageDataBuilder
-from shared import BuilderRequirements
+from collections import OrderedDict
+
+import shared
 from debug import DebugImageData as debug
 from CLI import QueryForAdditionalDetails
 debug = debug()
+
+class Attributes:
+    PROCESSED_ATTRIBUTES = [
+        "date",
+        "time",
+        "total_amount"
+    ]
+
+    UNCERTAIN_ATTRIBUTES = [
+        "address",
+        "description"
+    ]
+
+    ANALYSIS_ATTRIBUTES = PROCESSED_ATTRIBUTES + UNCERTAIN_ATTRIBUTES
+
+    BUILDER_ATTRIBUTES = OrderedDict([
+        ("date_time", 0),
+        ("address", 1),
+        ("total_amount", 0),
+        ("description", 2)
+    ])
 
 class ImageData(object):
     MAX_ADDRESS_LENGTH = 10
@@ -23,8 +44,8 @@ class ImageData(object):
         self.attr_list = Builder(self.raw_data, self.image_name).process()
 
     def is_valid(self):
-        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
-            if (attr in ImageDataCore.PROCESSED_ATTRIBUTES) and (self.raw_data[attr] is None):
+        for attr in Attributes.ANALYSIS_ATTRIBUTES:
+            if (attr in Attributes.PROCESSED_ATTRIBUTES) and (self.raw_data[attr] is None):
                 return False
 
         return True
@@ -38,7 +59,7 @@ class ImageData(object):
         return self.attr_list[0]
 
     def _assign_instance_variables(self):
-        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
+        for attr in Attributes.ANALYSIS_ATTRIBUTES:
             setattr(self, attr, self.raw_data[attr])
 
     def _normalize_none(self):
@@ -52,7 +73,7 @@ class ImageData(object):
 class Builder(ImageData):
     def __init__(self, data, image_name):
         self.image_name = image_name
-        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
+        for attr in Attributes.ANALYSIS_ATTRIBUTES:
             setattr(self, attr, data[attr])
 
     def process(self):
@@ -64,13 +85,13 @@ class Builder(ImageData):
         return self.build_results
 
     def _build_using_builder_attributes(self):
-        for attribute_name, value in ImageDataBuilder.BUILDER_ATTRIBUTES.items():
+        for attribute_name, value in Attributes.BUILDER_ATTRIBUTES.items():
             function = getattr(self, self._privatize(attribute_name))
             self.build_results.append(function())
 
     def _query_for_required_values(self):
-        for index, attribute_name in enumerate(ImageDataBuilder.BUILDER_ATTRIBUTES):
-            value = ImageDataBuilder.BUILDER_ATTRIBUTES[attribute_name]
+        for index, attribute_name in enumerate(Attributes.BUILDER_ATTRIBUTES):
+            value = Attributes.BUILDER_ATTRIBUTES[attribute_name]
 
             if self._required(value) and self.build_results[index] is None:
                 self.build_results[index] = self._query(attribute_name)
@@ -103,10 +124,10 @@ class Builder(ImageData):
         return self.description
 
     def _required(self, value):
-        if ImageDataBuilder.PRECISION is BuilderRequirements.REQUIRES_COMPLETE:
+        if shared.GlobalVariables.PRECISION is shared.BuilderRequirements.REQUIRES_COMPLETE:
             return True
 
-        return value == ImageDataBuilder.PRECISION.value
+        return value == shared.GlobalVariables.PRECISION.value
 
     def _privatize(self, method_name):
         return "_" + method_name

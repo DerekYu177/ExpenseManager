@@ -3,7 +3,7 @@ import pytesseract
 
 from ..shared         import GlobalVariables
 from ..shared         import GlobalConstants
-from ..shared         import ImageDataCore
+from ..image_data     import Attributes
 from ..image_data     import ImageData
 from ..debug          import DebugImageProcessor as debug
 from finder           import Finder
@@ -29,7 +29,7 @@ class ImageTextSearch:
     def __init__(self, original_text, image_name):
         self.original_text = original_text
         self.image_name = image_name
-        self.core_data = dict.fromkeys(ImageDataCore.ANALYSIS_ATTRIBUTES, None)
+        self.core_data = dict.fromkeys(Attributes.ANALYSIS_ATTRIBUTES, None)
         self._populate_core_data()
 
     def analyze(self):
@@ -41,7 +41,7 @@ class ImageTextSearch:
     def _populate_core_data(self):
         f = Finder(self.original_text)
 
-        for attr in ImageDataCore.ANALYSIS_ATTRIBUTES:
+        for attr in Attributes.ANALYSIS_ATTRIBUTES:
             find_function = getattr(f, f.define_finders(attr))
             value = find_function()
             self.core_data[attr] = value

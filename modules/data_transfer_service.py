@@ -9,7 +9,7 @@ from image_data import ImageData
 
 class DataTransferService:
     PERSISTANCE_STATE = False
-    shared.ImageDataBuilder.PRECISION = shared.BuilderRequirements.AS_IS
+    shared.GlobalVariables.PRECISION = shared.BuilderRequirements.AS_IS
 
     def __init__(self):
         shared.Setter().set_state(shared.State.DEBUG_BASIC)

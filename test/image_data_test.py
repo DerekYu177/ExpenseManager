@@ -1,9 +1,6 @@
 import unittest, pytest
-from ..modules.shared import GlobalConstants
-from ..modules.shared import GlobalVariables
-from ..modules.shared import ImageDataBuilder
-from ..modules.shared import BuilderRequirements
-from ..modules.shared import State
+
+from ..modules import shared
 from ..modules.image_data import ImageData
 from ..modules.CLI import Query
 
@@ -11,7 +8,7 @@ class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
         global test_data, image_name
-        GlobalVariables.STATE = State.TEST
+        shared.GlobalVariables.STATE = shared.State.TEST
 
         test_data = {
             "date": "07/01/17",
@@ -28,25 +25,25 @@ class TestMethods(unittest.TestCase):
         assert ImageData(test_data, image_name)
 
     def test_str_with_precision_as_is(self):
-        ImageDataBuilder.PRECISION = BuilderRequirements.AS_IS
+        shared.GlobalVariables.PRECISION = shared.BuilderRequirements.AS_IS
         image_data = ImageData(test_data, image_name)
         expected = "070117-20:48:14,None,$2017.21,None"
         assert str(image_data) == expected
 
     def test_str_with_precision_requires_address(self):
-        ImageDataBuilder.PRECISION = BuilderRequirements.REQUIRES_ADDRESS
+        shared.GlobalVariables.PRECISION = shared.BuilderRequirements.REQUIRES_ADDRESS
         image_data = ImageData(test_data, image_name)
         expected = "070117-20:48:14,%s,$2017.21,None" % (Query.DEFAULT_MESSAGE)
         assert str(image_data) == expected
 
     def test_str_with_precision_requires_description(self):
-        ImageDataBuilder.PRECISION = BuilderRequirements.REQUIRES_DESCRIPTION
+        shared.GlobalVariables.PRECISION = shared.BuilderRequirements.REQUIRES_DESCRIPTION
         image_data = ImageData(test_data, image_name)
         expected = "070117-20:48:14,None,$2017.21,%s" % (Query.DEFAULT_MESSAGE)
         assert str(image_data) == expected
 
     def test_str_with_precision_requires_complete(self):
-        ImageDataBuilder.PRECISION = BuilderRequirements.REQUIRES_COMPLETE
+        shared.GlobalVariables.PRECISION = shared.BuilderRequirements.REQUIRES_COMPLETE
         image_data = ImageData(test_data, image_name)
         expected = "070117-20:48:14,%s,$2017.21,%s" % (Query.DEFAULT_MESSAGE, Query.DEFAULT_MESSAGE)
         assert str(image_data) == expected
