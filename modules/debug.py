@@ -12,12 +12,16 @@ def can_call(func):
         klass = args[0]
         state = klass.CALL_STATUS
         global_state = GlobalVariables.STATE
-        if (global_state is State.NOMINAL) or (global_state is State.TEST):
+        if (global_state is State.NOMINAL):
+            return
+        elif (global_state is State.TEST):
             return
         elif (global_state is State.DEBUG_BASIC):
             return func(*args)
-        elif _is_verbose(func, klass):
+        elif (global_state is State.DEBUG_VERBOSE) and _is_verbose(func, klass):
             return func(*args)
+        else:
+            return
 
     return respond_depending_on_state
 
