@@ -80,10 +80,6 @@ class TestMethods(unittest.TestCase, test_helper.TestHelper):
         p.close()
 
     def test_protected_append_with_all_none_does_not_write_to_file(self):
-<<<<<<< HEAD
-        shared.GlobalVariables.STATE = shared.State.DEBUG_BASIC
-=======
->>>>>>> [Feature] test-helper init
         p = persistor.Persistor(False)
         none_image_data = ImageData({
             "date": None,
