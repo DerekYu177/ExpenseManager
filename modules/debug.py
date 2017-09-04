@@ -38,14 +38,14 @@ class DebugCore:
     NEWLINE = "\n"
 
 class BaseDebug:
-    def set_debug(self, debug_flag=State.NOMINAL):
-        self.debug_print("Set GLOBAL_DEBUG: %s" % debug_flag.name)
-        DebugCore.GLOBAL_DEBUG = debug_flag
-        DebugDataFileHelper.CALL_STATUS = debug_flag
-        DebugPersistor.CALL_STATUS = debug_flag
-        DebugPhotoFileFinder.CALL_STATUS = debug_flag
-        DebugImageProcessor.CALL_STATUS = debug_flag
-        DebugImageData.CALL_STATUS = debug_flag
+    def set_debug(self, state=State.NOMINAL):
+        self.debug_print("Set GLOBAL_DEBUG: %s" % state.name)
+        DebugCore.GLOBAL_DEBUG = state
+        DebugDataFileHelper.CALL_STATUS = state
+        DebugPersistor.CALL_STATUS = state
+        DebugPhotoFileFinder.CALL_STATUS = state
+        DebugImageProcessor.CALL_STATUS = state
+        DebugImageData.CALL_STATUS = state
 
     def show_sys_path(self):
         import sys
