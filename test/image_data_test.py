@@ -3,16 +3,15 @@ from ..modules.shared import GlobalConstants
 from ..modules.shared import GlobalVariables
 from ..modules.shared import ImageDataBuilder
 from ..modules.shared import BuilderRequirements
+from ..modules.shared import State
 from ..modules.image_data import ImageData
 from ..modules.CLI import Query
-from ..modules.debug import DebugCore
-from ..modules.debug import DebugState
 
 class TestMethods(unittest.TestCase):
     @classmethod
     def setup_class(cls):
         global test_data, image_name
-        DebugCore.GLOBAL_DEBUG = DebugState.BASIC
+        GlobalVariables.STATE = State.TEST
 
         test_data = {
             "date": "07/01/17",

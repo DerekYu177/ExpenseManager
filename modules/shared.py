@@ -4,9 +4,16 @@ import os
 
 directory = os.getcwd()
 
+class State(Enum):
+    NOMINAL = 0
+    DEBUG_BASIC = 1
+    DEBUG_VERBOSE = 2
+    TEST = 3
+
 class GlobalVariables:
     RECEIPT_LOCATION = ""
     IMAGE_LOCATION = '%s/test/images' % (directory)
+    STATE = State.NOMINAL
 
 class GlobalConstants:
     PYTESSERACT_LOCATION = '/usr/local/Cellar/tesseract/3.05.01/bin/tesseract'
