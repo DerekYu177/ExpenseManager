@@ -3,7 +3,6 @@ import os
 from enum import Enum
 
 import data_file_helper
-from ..shared import GlobalConstants
 from ..shared import GlobalVariables
 from ..debug import DebugPersistor as debug
 
@@ -49,7 +48,7 @@ class Persistor:
 
     def turn(self, new_internal_state):
         if not self.p_state and new_internal_state:
-            self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
+            self.f = open(GlobalVariables.DATA_PATH, "r+")
         elif self.p_state and not new_internal_state:
             self.close()
         else:
@@ -59,7 +58,7 @@ class Persistor:
 
     def _prepare_data_file(self):
         if self.p_state:
-            self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
+            self.f = open(GlobalVariables.DATA_PATH, "r+")
         else:
             self.f = None
 
@@ -67,7 +66,7 @@ class Persistor:
         self._append_with_debug(write_data)
 
     def _temporary_append(self, write_data):
-        f = open(GlobalConstants.PERSISTED_DATA_PATH, "a") #append
+        f = open(GlobalVariables.DATA_PATH, "a") #append
         self._append_with_debug(write_data, f)
         f.close()
 
@@ -75,7 +74,7 @@ class Persistor:
         return self._query_with_debug(new_data)
 
     def _temporary_query(self, new_data):
-        f = open(GlobalConstants.PERSISTED_DATA_PATH, "r") #read only
+        f = open(GlobalVariables.DATA_PATH, "r") #read only
         text_found = self._query_with_debug(new_data, f)
         f.close()
 
@@ -125,7 +124,7 @@ class Persistor:
     def _refresh(self):
         self.f.close()
         # flush cache
-        self.f = open(GlobalConstants.PERSISTED_DATA_PATH, "r+")
+        self.f = open(GlobalVariables.DATA_PATH, "r+")
 
 class Identification(Enum):
     NEW_ENTRY = 0

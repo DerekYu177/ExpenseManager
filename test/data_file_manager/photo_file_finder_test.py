@@ -1,10 +1,11 @@
 import unittest
 import pytest
 
+from .. import test_helper
 from ...modules.data_file_manager import photo_file_finder
 from ...modules.shared import GlobalVariables
 
-class TestMethods(unittest.TestCase):
+class TestMethods(unittest.TestCase, test_helper.TestHelper):
     def test_find_photos_when_glb_var_not_instantiated_raises_error(self):
         GlobalVariables.RECEIPT_LOCATION = ""
 
@@ -13,8 +14,6 @@ class TestMethods(unittest.TestCase):
         error.match(r'Receipt location not initialized')
 
     def test_find_photos(self):
-        GlobalVariables.RECEIPT_LOCATION = GlobalVariables.IMAGE_LOCATION
-
         assert len(photo_file_finder.find_photos()) == 5
 
     def test_is_photo(self):

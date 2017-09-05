@@ -1,15 +1,15 @@
 import unittest, pytest
 import os
 from ...modules.data_file_manager import persistor
+from .. import test_helper
 
 from ...modules import shared
 from ...modules.image_data import ImageData
 from ...modules.data_file_manager import data_file_helper
 
-class TestMethods(unittest.TestCase):
+class TestMethods(unittest.TestCase, test_helper.TestHelper):
     def setup_method(self, method):
         global id1, id2
-        shared.GlobalConstants.PERSISTED_DATA_PATH = shared.GlobalConstants.TEST_PERSISTED_DATA_PATH
         data_file_helper.initialize_data_file()
         image_name = "dank_memes.jpg"
 
@@ -39,7 +39,7 @@ class TestMethods(unittest.TestCase):
         p.append(id2)
         p.close()
 
-        f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
+        f = open(shared.GlobalVariables.DATA_PATH, "r")
         contents = f.read()
         f.close()
 
@@ -62,7 +62,7 @@ class TestMethods(unittest.TestCase):
         p.append(id2)
         p.close()
 
-        f = open(shared.GlobalConstants.PERSISTED_DATA_PATH, "r")
+        f = open(shared.GlobalVariables.DATA_PATH, "r")
         contents = f.read()
         f.close()
 
@@ -80,7 +80,6 @@ class TestMethods(unittest.TestCase):
         p.close()
 
     def test_protected_append_with_all_none_does_not_write_to_file(self):
-        shared.GlobalVariables.STATE = shared.State.DEBUG_BASIC
         p = persistor.Persistor(False)
         none_image_data = ImageData({
             "date": None,

@@ -1,9 +1,11 @@
 import unittest
 import pytest
+
+from .. import test_helper
 from ...modules.photo_analyzer import finder
 from ...modules.image_data import ImageData
 
-class TestMethods(unittest.TestCase):
+class TestMethods(unittest.TestCase, test_helper.TestHelper):
     @classmethod
     def setup_class(cls):
         global f
