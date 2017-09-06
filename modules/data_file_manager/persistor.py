@@ -21,17 +21,18 @@ class Persistor:
         self.last_action = LastAction.INIT
 
     def close(self):
-        if self.f is None:
+        if self.p_state:
+            self.f.close()
+        else:
             return
 
-        self.f.close()
-
     def protected_append(self, write_data):
-        state = self._temporary_query(write_data)
+        self.p_state = False
+        state = self.query(write_data)
         if (state is Identification.EXISTS) or (state is Identification.IS_NONE):
             return
 
-        self._temporary_append(write_data)
+        self.append(write_data)
 
     def append(self, write_data):
         if self.p_state:
@@ -53,8 +54,6 @@ class Persistor:
             self.close()
         else:
             pass
-
-    # private
 
     def _prepare_data_file(self):
         if self.p_state:
@@ -135,3 +134,4 @@ class LastAction(Enum):
     INIT = 0
     APPEND = 1
     QUERY = 2
+    SORT = 3
