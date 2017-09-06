@@ -4,6 +4,10 @@ from functools import wraps
 from shared import GlobalVariables
 from shared import GlobalConstants
 from shared import State
+from CLI import PrintCore
+from CLI import Printer
+
+SOURCE = "DEBUG"
 
 def can_call(func):
     @wraps(func)
@@ -29,64 +33,7 @@ def _is_verbose(function, klass):
     else:
         return False
 
-class DebugCore:
-    DEBUG_COUNTER = 0
-    MAX_MESSAGE_LENGTH = 100
-    VERBOSE_METHODS = True # FIXME
-    NEWLINE = "\n"
-
-class BaseDebug:
-    def set_debug(self, state=State.NOMINAL):
-        self.debug_print("Set GLOBAL_DEBUG: %s" % state.name)
-        DebugCore.GLOBAL_DEBUG = state
-
-    def show_sys_path(self):
-        import sys
-        for path in sys.path:
-            print path
-
-    def debug_print(self, text):
-        text = self.text_truncate(text)
-        print "%s: %s" % (DebugCore.DEBUG_COUNTER, text)
-        # FIXME add condition where there is a new line involved
-        DebugCore.DEBUG_COUNTER = DebugCore.DEBUG_COUNTER + 1
-
-    def text_truncate(self, text):
-        if DebugCore.VERBOSE_METHODS or len(text) < DebugCore.MAX_MESSAGE_LENGTH: # FIXME
-            return text
-
-        text = text[:DebugCore.MAX_MESSAGE_LENGTH-3]
-        text = text + "..."
-        return text
-
-    def text_truncate_access_location(self, location):
-        return location # TODO
-
-    def text_tab(self, text, tab):
-        space_number = tab * 3
-        space = " "
-        return space_number * space + text
-
-    def indent_text(self, text, current_indentation=0):
-        statement = DebugCore.NEWLINE
-        for line in text.split(DebugCore.NEWLINE):
-            statement = statement + self.text_tab(line, current_indentation + 1) + DebugCore.NEWLINE
-        return statement
-
-    def list_to_string(self, item_in_list, current_indentation=0):
-        statement = DebugCore.NEWLINE
-        for item in item_in_list:
-            statement = statement + self.text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
-        return statement
-
-    def dict_to_string(self, dictionary, current_indentation=0):
-        statement = DebugCore.NEWLINE
-        for key, value in dictionary.items():
-            item = "%s:%s" % (key, value)
-            statement = statement + self.text_tab(item, current_indentation + 1) + DebugCore.NEWLINE
-        return statement
-
-class DebugService(BaseDebug): #TODO
+class DebugService(Printer, PrintCore): #TODO
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -95,7 +42,7 @@ class DebugService(BaseDebug): #TODO
     def show_image_data(self, image_data):
         pass
 
-class DebugDataFileHelper(BaseDebug):
+class DebugDataFileHelper(Printer, PrintCore):
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -103,17 +50,20 @@ class DebugDataFileHelper(BaseDebug):
 
     @can_call
     def file_and_directory(self, file_path, directory_exists, file_exists):
-        statement = "File path: %s" % (file_path) + DebugCore.NEWLINE
-        statement = statement + "Directory exist?: %s" % (directory_exists) + DebugCore.NEWLINE
-        statement = statement + "File exist?: %s" % (file_exists) + DebugCore.NEWLINE
-        self.debug_print(statement)
+        statement = "File path: %s" % (file_path) + self.NEWLINE
+        statement = statement + "Directory exist?: %s" % (directory_exists) + self.NEWLINE
+        statement = statement + "File exist?: %s" % (file_exists) + self.NEWLINE
+        self.show(SOURCE, statement)
 
     @can_call
     def successful_file_and_directory_created(self, file_path):
-        self.debug_print("File/Dir Created: (success) at %s" % (file_path))
+        self.show(SOURCE, "File/Dir Created: (success) at %s" % (file_path))
 
-class DebugPersistor(BaseDebug):
-    VERBOSE_METHODS = []
+class DebugPersistor(Printer, PrintCore):
+    VERBOSE_METHODS = [
+        "attempted_query",
+        "attempted_written_data"
+    ]
 
     def __init__(self):
         pass
@@ -121,22 +71,22 @@ class DebugPersistor(BaseDebug):
     @can_call
     def attempted_query(self, write_data, p_state):
         statement = "Query: (Attempt) (%s) %s" % (self._p_state(p_state), write_data)
-        self.debug_print(statement)
+        self.show(SOURCE, statement)
 
     @can_call
     def successful_query(self, write_data, p_state, result):
         statement = "Query: (Success) (%s) (%s) %s" % (self._p_state(p_state), self._result(result), write_data)
-        self.debug_print(statement)
+        self.show(SOURCE, statement)
 
     @can_call
     def attempted_written_data(self, write_data, p_state):
         statement = "Write: (Attempt) (%s) %s" % (self._p_state(p_state), write_data)
-        self.debug_print(statement)
+        self.show(SOURCE, statement)
 
     @can_call
     def successful_written_data(self, write_data, p_state):
         statement = "Write: (Success) (%s) %s" % (self._p_state(p_state), write_data)
-        self.debug_print(statement)
+        self.show(SOURCE, statement)
 
     def _p_state(self, p_state):
         if p_state:
@@ -147,19 +97,25 @@ class DebugPersistor(BaseDebug):
     def _result(self, result):
         return result.name
 
-class DebugPhotoFileFinder(BaseDebug):
-    VERBOSE_METHODS = []
+class DebugPhotoFileFinder(Printer, PrintCore):
+    VERBOSE_METHODS = [
+        "all_photos_in_location"
+    ]
 
     def __init__(self):
         pass
 
     @can_call
-    def print_all_photo_files_in_location(self, observed_photos):
-        statement = ("Receipt location: %s" % GlobalVariables.RECEIPT_LOCATION) + DebugCore.NEWLINE
-        statement = statement + self.list_to_string(observed_photos, 0) + DebugCore.NEWLINE
-        self.debug_print(statement)
+    def location(self):
+        statement = ("Receipt location: %s" % GlobalVariables.RECEIPT_LOCATION)
+        self.show(SOURCE, statement)
 
-class DebugImageProcessor(BaseDebug):
+    @can_call
+    def all_photos_in_location(self, observed_photos):
+        statement = self.list_to_string(observed_photos, 0)
+        self.show(SOURCE, statement)
+
+class DebugImageProcessor(Printer, PrintCore):
     VERBOSE_METHODS = [
         "text_and_relevant_text"
     ]
@@ -174,28 +130,28 @@ class DebugImageProcessor(BaseDebug):
 
     @can_call
     def show_image_name(self, image_location):
-        statement = "The current photo is:" + image_location
-        self.debug_print(statement)
+        statement = "Current photo:" + image_location
+        self.show(SOURCE, statement)
 
     @can_call
     def show_set_attributes(self, attr, attr_value):
-        self.debug_print("Set %s: %s" % (attr, attr_value))
+        self.show(SOURCE, "Set %s: %s" % (attr, attr_value))
 
     @can_call
     def text_and_relevant_text(self, original_text, relevant_text):
-        statement_1 = "Original Text:" + DebugCore.NEWLINE
-        statement_1 = statement_1 + self.indent_text(original_text)
-        self.debug_print(statement_1)
+        statement = "Original Text:" + self.NEWLINE
+        statement = statement + self.indent_text(original_text)
+        self.show(SOURCE, statement)
 
-        statement_2 = "Relevant text:" + self.dict_to_string(relevant_text) + DebugCore.NEWLINE
-        self.debug_print(statement_2)
+        statement = "Relevant text:" + self.dict_to_string(relevant_text) + self.NEWLINE
+        self.show(SOURCE, statement)
 
     @can_call
     def show_full_data(self, filled_data):
         statement = self.dict_to_string(filled_data)
-        self.debug_print(statement)
+        self.show(SOURCE, statement)
 
-class DebugImageData(BaseDebug):
+class DebugImageData(Printer, PrintCore):
     VERBOSE_METHODS = []
 
     def __init__(self):
@@ -204,4 +160,4 @@ class DebugImageData(BaseDebug):
     @can_call
     def show_csv_text(self, joined_text):
         statement = "Data:" + joined_text
-        self.debug_print(statement)
+        self.show(SOURCE, statement)
