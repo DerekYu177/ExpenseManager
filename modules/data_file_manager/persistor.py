@@ -3,6 +3,7 @@ import os
 from enum import Enum
 
 import data_file_helper
+from .. import image_data
 from ..shared import GlobalVariables
 from ..debug import DebugPersistor as debug
 
@@ -29,8 +30,8 @@ class Persistor:
     def protected_append(self, write_data):
         self.p_state = False
         state = self.query(write_data)
-        if (state is Identification.EXISTS) or (state is Identification.IS_NONE):
-            return
+        if state is not image_data.ExistanceState.NEW_ENTRY:
+            return state
 
         self.append(write_data)
 
@@ -87,27 +88,17 @@ class Persistor:
         self.last_action = LastAction.APPEND
 
     def _query_with_debug(self, new_data, f=None):
-        identifier = new_data.identifier()
         self._refresh_file()
         debug.attempted_query(str(new_data), self.p_state)
         openable_file = self._file(f)
         text = csv.reader(openable_file, delimiter=",")
-        text_found = self._find_by_identifier(text, identifier)
+
+        text_found = new_data.exists_in_block_of_text(text)
+
         debug.successful_query(str(new_data), self.p_state, text_found)
         self.last_action = LastAction.QUERY
 
         return text_found
-
-    def _find_by_identifier(self, text, identifier):
-        if (identifier is None) or (identifier is str(None)):
-            # we don't want to write None
-            return Identification.IS_NONE
-
-        for row in text:
-            if row[0] == identifier:
-                return Identification.EXISTS
-
-        return Identification.NEW_ENTRY
 
     def _file(self, f=None):
         if self.f:
@@ -124,11 +115,6 @@ class Persistor:
         self.f.close()
         # flush cache
         self.f = open(GlobalVariables.DATA_PATH, "r+")
-
-class Identification(Enum):
-    NEW_ENTRY = 0
-    EXISTS = 1
-    IS_NONE = 2
 
 class LastAction(Enum):
     INIT = 0

@@ -18,3 +18,4 @@ class Sorter(Persistor):
         f.close()
 
     def _sort_set(f=None):
+        pass

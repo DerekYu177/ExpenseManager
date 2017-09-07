@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from enum import Enum
 
 import shared
 from debug import DebugImageData as debug
@@ -20,7 +21,8 @@ class Attributes:
     ANALYSIS_ATTRIBUTES = PROCESSED_ATTRIBUTES + UNCERTAIN_ATTRIBUTES
 
     BUILDER_ATTRIBUTES = OrderedDict([
-        ("date_time", 0),
+        ("date", 0),
+        ("time", 0),
         ("address", 1),
         ("total_amount", 0),
         ("description", 2)
@@ -28,6 +30,7 @@ class Attributes:
 
 class ImageData(object):
     MAX_ADDRESS_LENGTH = 10
+    EMPTY = "-"
 
     def __init__(self, data, image_name):
 
@@ -43,24 +46,12 @@ class ImageData(object):
         self.raw_data = data
         self.attr_list = Builder(self.raw_data, self.image_name).process()
 
-    def is_valid(self):
-        for attr in Attributes.ANALYSIS_ATTRIBUTES:
-            if (attr in Attributes.PROCESSED_ATTRIBUTES) and (self.raw_data[attr] is None):
-                return False
-
-        return True
-
     def __str__(self):
         self._normalize_none()
-        text = ",".join(self.attr_list)
-        return text
+        return ",".join(self.attr_list)
 
-    def identifier(self):
-        return self.attr_list[0]
-
-    def _assign_instance_variables(self):
-        for attr in Attributes.ANALYSIS_ATTRIBUTES:
-            setattr(self, attr, self.raw_data[attr])
+    def exists_in_block_of_text(self, text):
+        return Finder(self.attr_list[0], self.attr_list[1]).exists_in_block_of_text(text)
 
     def _normalize_none(self):
         for pos, attr in enumerate(self.attr_list):
@@ -77,50 +68,48 @@ class Builder(ImageData):
             setattr(self, attr, data[attr])
 
     def process(self):
-        self.build_results = []
+        build_results = []
 
-        self._build_using_builder_attributes()
-        self._query_for_required_values()
+        build_results = self._build_using_builder_attributes(build_results)
+        build_results = self._query_for_required_values(build_results)
 
-        return self.build_results
+        return build_results
 
-    def _build_using_builder_attributes(self):
+    def _build_using_builder_attributes(self, build_results):
         for attribute_name, value in Attributes.BUILDER_ATTRIBUTES.items():
-            function = getattr(self, self._privatize(attribute_name))
-            self.build_results.append(function())
+            attribute = getattr(self, attribute_name)
+            if attribute is None:
+                build_results.append(self.EMPTY)
+            else:
+                function = getattr(self, self._privatize(attribute_name))
+                build_results.append(function())
 
-    def _query_for_required_values(self):
+        return build_results
+
+    def _query_for_required_values(self, build_results):
         for index, attribute_name in enumerate(Attributes.BUILDER_ATTRIBUTES):
             value = Attributes.BUILDER_ATTRIBUTES[attribute_name]
 
-            if self._required(value) and self.build_results[index] is None:
-                self.build_results[index] = self._query(attribute_name)
+            if self._required(value) and build_results[index] is None:
+                build_results[index] = self._query(attribute_name)
 
-    def _date_time(self):
-        if self.date is None:
-            return None
+        return build_results
 
-        date = self.date.replace("/","")
-        time = self.time
+    def _date(self):
+        return self.date.replace("/","")
 
-        return "%s-%s" % (date, time)
+    def _time(self):
+        hours, minutes, seconds = self.time.split(":")
+        military_time = hours + minutes
+        return "%s(%s)" % (military_time, seconds)
 
     def _address(self):
-        if self.address is None:
-            return None
-
         return self._shorten_addr(self.address)
 
     def _total_amount(self):
-        if self.total_amount is None:
-            return None
-
         return self.total_amount
 
     def _description(self):
-        if self.description is None:
-            return None
-
         return self.description
 
     def _required(self, value):
@@ -140,3 +129,24 @@ class Builder(ImageData):
         address = address + "..."
 
         return address
+
+class Finder(ImageData):
+    def __init__(self, date, time):
+        self.identifier = (date, time)
+
+    def exists_in_block_of_text(self, block_of_text):
+        date, time = self.identifier
+        if date is self.EMPTY or time is self.EMPTY:
+            # we don't want to write None
+            return ExistanceState.NONE
+
+        for row in block_of_text:
+            if row[0] == date and row[1] == time:
+                return ExistanceState.EXISTS
+
+        return ExistanceState.NEW_ENTRY
+
+class ExistanceState(Enum):
+    NEW_ENTRY = 0
+    EXISTS = 1
+    NONE = 2
